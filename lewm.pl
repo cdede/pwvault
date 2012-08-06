@@ -133,13 +133,13 @@ sub setpass(){
   ReadMode(0); 
   if ($password eq $password1){
     my ($fh, $filename) = tempfile();
-    open FILE, ">$filename" 
+    unlink($filename);
+    $filename .= '.gpg';
+    open FILE, "|gpg -er $_[0] -o $filename"
       or die $!;
     print FILE $password;
     close FILE;
-    system "gpg -er $_[0] $filename";
-    print "$filename.gpg\n";
-    unlink($filename);
+    print "$filename\n";
   }
   else{
   print "not match \n"
@@ -207,16 +207,12 @@ elsif ($len3 == 1)
  {
   print $key,'  :  ', $value->{'username'}," | password copied to clipboard \n";
 
-    my ($fh, $filename) = tempfile();
-    open FILE, ">$filename" 
+    open FILE,  " | xsel -i "
       or die $!;
     print FILE $value->{'password'};
     close FILE;
-        system "xsel -i < $filename";
-    unlink($filename);
         sleep 9;
-        `xsel -c`;
-
+        system("xsel -c");
 }
 }
 else
