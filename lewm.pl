@@ -207,7 +207,7 @@ elsif ($len3 == 1)
  {
   print $key,'  :  ', $value->{'username'}," | password copied to clipboard \n";
 
-    open FILE,  " | xsel -i "
+    open FILE,  " | xsel -i -b"
       or die $!;
     print FILE $value->{'password'};
     close FILE;
