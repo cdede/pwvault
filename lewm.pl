@@ -147,19 +147,20 @@ sub setpass(){
   exit(0);
 }
 my %options;
-getopts('f:p:hs', \%options);
+getopts('f:p:a:hs', \%options);
 $options{h} && usage();
 $options{s} && &setpass($ARGV[0]);
 sub usage
 {
  print <<FILE;
-lewm.pl  [-h] [-s] [-f FILENAME] [-p PASSFILENAME]
+lewm.pl  [-h] [-s] [-f FILENAME] [-p PASSFILENAME] [-a xsel_args]
 FILE
 exit;
 }
 
 my $file = $options{f} || 'kk.kdb';
 my $master_pass = $options{p} || 'abc';
+my $xsel_args = $options{a} || ' ';
 if ($file eq '/dev/null' && $master_pass eq 'p'){
 
 $str1=$ARGV[0];
@@ -207,12 +208,12 @@ elsif ($len3 == 1)
  {
   print $key,'  :  ', $value->{'username'}," | password copied to clipboard \n";
 
-    open FILE,  " | xsel -i -b"
+    open FILE,  " | xsel -i ".$xsel_args
       or die $!;
     print FILE $value->{'password'};
     close FILE;
         sleep 9;
-        system("xsel -c");
+        system("xsel -c ".$xsel_args);
 }
 }
 else
