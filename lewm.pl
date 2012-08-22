@@ -158,6 +158,19 @@ FILE
 exit;
 }
 
+sub copy2clip(){
+  my ($key,$tip,$xsel_args,$value)= @_;
+  print $key,'  :  ', " | $tip copied to clipboard \n";
+
+    open FILE,  " | xsel -i ".$xsel_args
+      or die $!;
+    print FILE $value;
+    close FILE;
+        sleep 9;
+        system("xsel -c ".$xsel_args);
+}
+
+
 my $file = $options{f} || 'kk.kdb';
 my $master_pass = $options{p} || 'abc';
 my $xsel_args = $options{a} || ' ';
@@ -206,14 +219,14 @@ elsif ($len3 == 1)
 {
   while(($key, $value) = each(%ret))
  {
-  print $key,'  :  ', $value->{'username'}," | password copied to clipboard \n";
-
-    open FILE,  " | xsel -i ".$xsel_args
-      or die $!;
-    print FILE $value->{'password'};
-    close FILE;
-        sleep 9;
-        system("xsel -c ".$xsel_args);
+   &copy2clip ($key,"password" ,$xsel_args ,
+     $value->{'password'});
+   print "get username ? \n";
+  chomp(my $key_1 = <STDIN>);
+  if ($key_1 eq ''){
+   &copy2clip ($key,"username" ,$xsel_args ,
+     $value->{'username'});
+  }
 }
 }
 else
