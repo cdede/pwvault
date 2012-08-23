@@ -121,39 +121,13 @@ $n10=($n01+1)%2;
 print $win,"\n";
 }
 
-sub setpass(){
-
-  print "input your password: \n";
-  ReadMode('noecho'); # don't echo
-  chomp(my $password = <STDIN>);
-  ReadMode(0); 
-  print "Repeat your password: \n";
-  ReadMode('noecho'); # don't echo
-  chomp(my $password1 = <STDIN>);
-  ReadMode(0); 
-  if ($password eq $password1){
-    my ($fh, $filename) = tempfile();
-    unlink($filename);
-    $filename .= '.gpg';
-    open FILE, "|gpg -er $_[0] -o $filename"
-      or die $!;
-    print FILE $password;
-    close FILE;
-    print "$filename\n";
-  }
-  else{
-  print "not match \n"
-  }
-  exit(0);
-}
 my %options;
-getopts('f:p:a:hs', \%options);
+getopts('f:p:a:h', \%options);
 $options{h} && usage();
-$options{s} && &setpass($ARGV[0]);
 sub usage
 {
  print <<FILE;
-lewm.pl  [-h] [-s] [-f FILENAME] [-p PASSFILENAME] [-a xsel_args]
+lewm.pl  [-h] [-f FILENAME] [-p PASSFILENAME] [-a xsel_args]
 FILE
 exit;
 }
