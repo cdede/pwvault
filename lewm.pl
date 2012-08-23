@@ -185,7 +185,7 @@ if ($file eq '/dev/null' && $master_pass eq 'r'){
 &easter_egg2($ARGV[0]);
   exit 0
 }
-$master_pass = `gpg --output - $master_pass`;
+$master_pass = $ENV{'LEPASS'};
 chomp $master_pass;
 $str1=$ARGV[0];
 @egid=split /\./, $str1;
