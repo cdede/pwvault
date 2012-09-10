@@ -3,6 +3,7 @@ from optparse import OptionParser
 from kppy import *
 import subprocess
 import time
+import os
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -22,7 +23,7 @@ def main():
     parser.add_option("-a", "--add", action="store_true", dest="add",
                       help="add mail conf", default=False)
     (options, args) = parser.parse_args()
-    db = KPDB(options.filename, subprocess.getoutput(options.passcmd), True)
+    db = KPDB(options.filename, subprocess.getoutput(os.getenv(options.passcmd)), True)
     len1=len(args)
     if len1 == 1:
         gid=''
