@@ -19,10 +19,6 @@ def main():
     parser = OptionParser()
     parser.add_option("-f", "--file", dest="filename", help="keepass FILE", metavar="FILE")
     parser.add_option("-p", "--pass", dest="passcmd", help="pass CMD", metavar="pass")
-    parser.add_option("-c", "--check", action="store_true", dest="check",
-                      help="check mail", default=False)
-    parser.add_option("-a", "--add", action="store_true", dest="add",
-                      help="add mail conf", default=False)
     (options, args) = parser.parse_args()
     db = KPDB(options.filename, subprocess.getoutput(os.getenv(options.passcmd)), True)
     len1=len(args)
@@ -50,6 +46,7 @@ def main():
         try:
             inp1=input('get username?')
         except KeyboardInterrupt:
+            db.close()
             sys.exit()
         if inp1=='':
             copy2clip(tmp1[0].title+'.'+tmp1[1].title,'username',tmp1[1].username)
