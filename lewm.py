@@ -4,6 +4,7 @@ from kppy import *
 import subprocess
 import time
 import os
+import sys
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -31,6 +32,9 @@ def main():
     elif len1==2:
         gid=args[0]
         eid=args[1]
+    else:
+        gid=''
+        eid=''
     ret=[]
     for gr1 in db.groups:
         if gid in gr1.title:
@@ -43,7 +47,10 @@ def main():
     elif len3==1:
         tmp1=ret[0]
         copy2clip(tmp1[0].title+'.'+tmp1[1].title,'password',tmp1[1].password)
-        inp1=input('get username?')
+        try:
+            inp1=input('get username?')
+        except KeyboardInterrupt:
+            sys.exit()
         if inp1=='':
             copy2clip(tmp1[0].title+'.'+tmp1[1].title,'username',tmp1[1].username)
     else:
