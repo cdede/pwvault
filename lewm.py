@@ -5,6 +5,7 @@ import subprocess
 import time
 import os
 import sys
+import configparser
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -17,10 +18,14 @@ def copy2clip(key,tip ,value):
     subprocess.Popen(['xsel', '-bc'])
 def main():
     parser = OptionParser()
-    parser.add_option("-f", "--file", dest="filename", help="keepass FILE", metavar="FILE")
-    parser.add_option("-p", "--pass", dest="passcmd", help="pass CMD", metavar="pass")
+
+    parser.add_option("-c", "--conf-file", dest="filename", help="conf FILE", metavar="FILE" ,default= os.path.expanduser('~/.config/lewm/config'))
     (options, args) = parser.parse_args()
-    db = KPDB(options.filename, subprocess.getoutput(os.getenv(options.passcmd)), True)
+    cf1 = configparser.ConfigParser()
+    cf1.read(options.filename)
+    key1 = cf1.get("main", "key")
+    pass1 = cf1.get("main", "pass")
+    db = KPDB(os.path.expanduser(key1), subprocess.getoutput(pass1), True)
     len1=len(args)
     if len1 == 1:
         gid=''
