@@ -25,7 +25,12 @@ def main():
     cf1.read(options.filename)
     key1 = cf1.get("main", "key")
     pass1 = cf1.get("main", "pass")
-    db = KPDB(os.path.expanduser(key1), subprocess.getoutput(pass1), True)
+    keyfile = cf1.get("main", "keyfile")
+    if keyfile == '':
+        keyfile = None
+    else:
+        keyfile = os.path.expanduser(keyfile)
+    db = KPDB(os.path.expanduser(key1), subprocess.getoutput(pass1) ,keyfile, True)
     len1=len(args)
     if len1 == 1:
         gid=''
