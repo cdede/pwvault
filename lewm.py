@@ -16,6 +16,16 @@ def copy2clip(key,tip ,value):
     time.sleep(9)
     subprocess.Popen(['xsel', '-pc'])
     subprocess.Popen(['xsel', '-bc'])
+
+def get_entries(db,gid,eid):
+    ret=[]
+    for gr1 in db.groups:
+        if gid in gr1.title:
+            for ent1 in gr1.entries:
+                if eid in ent1.title:
+                    ret.append( [gr1,ent1])
+    return ret
+
 def main():
     parser = OptionParser()
 
@@ -26,11 +36,22 @@ def main():
     key1 = cf1.get("main", "key")
     pass1 = cf1.get("main", "pass")
     keyfile = cf1.get("main", "keyfile")
+    
+    key2 = cf1.get(pass1, "key")
+    pass2 = None
+    keyfile2 = cf1.get(pass1, "keyfile")
+
+    db2 = KPDB(os.path.expanduser(key2), pass2 ,os.path.expanduser(keyfile2), True)
+    ret=get_entries(db2,
+            cf1.get(pass1, "group"),
+            cf1.get(pass1, "title"))
+    ret_pass=ret[0][1].password
+    db2.close()
     if keyfile == '':
         keyfile = None
     else:
         keyfile = os.path.expanduser(keyfile)
-    db = KPDB(os.path.expanduser(key1), subprocess.getoutput(pass1) ,keyfile, True)
+    db = KPDB(os.path.expanduser(key1), ret_pass ,keyfile, True)
     len1=len(args)
     if len1 == 1:
         gid=''
@@ -41,12 +62,7 @@ def main():
     else:
         gid=''
         eid=''
-    ret=[]
-    for gr1 in db.groups:
-        if gid in gr1.title:
-            for ent1 in gr1.entries:
-                if eid in ent1.title:
-                    ret.append( [gr1,ent1])
+    ret=get_entries(db,gid,eid)
     len3=len(ret)
     if len3 == 0:
         print ('no record found ')
