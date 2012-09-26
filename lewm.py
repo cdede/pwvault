@@ -6,6 +6,7 @@ import time
 import os
 import sys
 import configparser
+from getpass import getpass
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -30,6 +31,8 @@ def main():
     parser = OptionParser()
 
     parser.add_option("-c", "--conf-file", dest="filename", help="conf FILE", metavar="FILE" ,default= os.path.expanduser('~/.config/lewm/config'))
+    parser.add_option("-a", "--add", action="store_true", dest="add",
+                      help="add password", default=False)
     (options, args) = parser.parse_args()
     cf1 = configparser.ConfigParser()
     cf1.read(options.filename)
@@ -41,10 +44,32 @@ def main():
     pass2 = None
     keyfile2 = cf1.get(pass1, "keyfile")
 
-    db2 = KPDB(os.path.expanduser(key2), pass2 ,os.path.expanduser(keyfile2), True)
-    ret=get_entries(db2,
-            cf1.get(pass1, "group"),
-            cf1.get(pass1, "title"))
+    key2=os.path.expanduser(key2)+'.new'
+    keyfile2=os.path.expanduser(keyfile2)
+    group2=cf1.get(pass1, "group")
+    title2=cf1.get(pass1, "title")
+    if options.add:
+        filebuffer = getpass('input password :')
+        filebuffer1 = getpass('repeat input password :')
+        if filebuffer1 == filebuffer :
+            password2 = filebuffer
+        else:
+            print ('not match')
+            sys.exit()
+
+        db2 = KPDB(new = True)
+        db2.keyfile = keyfile2
+        db2.create_group(group2)
+        for gr1 in db2.groups:
+            if group2 == gr1.title:
+                break
+        gr1.create_entry(title2,1,'','',password2,'',2999,12,28)
+        db2.save(key2)
+        db2.close()
+        sys.exit()
+
+    db2 = KPDB(key2, pass2 ,keyfile2, True)
+    ret=get_entries(db2, group2, title2)
     ret_pass=ret[0][1].password
     db2.close()
     if keyfile == '':
