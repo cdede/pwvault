@@ -44,7 +44,7 @@ def main():
     pass2 = None
     keyfile2 = cf1.get(pass1, "keyfile")
 
-    key2=os.path.expanduser(key2)+'.new'
+    key2=os.path.expanduser(key2)
     keyfile2=os.path.expanduser(keyfile2)
     group2=cf1.get(pass1, "group")
     title2=cf1.get(pass1, "title")
@@ -64,7 +64,7 @@ def main():
             if group2 == gr1.title:
                 break
         gr1.create_entry(title2,1,'','',password2,'',2999,12,28)
-        db2.save(key2)
+        db2.save(key2+'.new')
         db2.close()
         sys.exit()
 
