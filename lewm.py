@@ -33,6 +33,8 @@ def main():
     parser.add_option("-c", "--conf-file", dest="filename", help="conf FILE", metavar="FILE" ,default= os.path.expanduser('~/.config/lewm/config'))
     parser.add_option("-a", "--add", action="store_true", dest="add",
                       help="add password", default=False)
+    parser.add_option("-s", "--show-all", action="store_true", dest="show_all",
+                      help="show url and comment", default=False)
     (options, args) = parser.parse_args()
     cf1 = configparser.ConfigParser()
     cf1.read(options.filename)
@@ -93,6 +95,9 @@ def main():
         print ('no record found ')
     elif len3==1:
         tmp1=ret[0]
+        if options.show_all :
+            print('comment :  ',tmp1[1].comment)
+            print('url :  ',tmp1[1].url)
         copy2clip(tmp1[0].title+'.'+tmp1[1].title,'password',tmp1[1].password)
         try:
             inp1=input('get username?')
