@@ -10,6 +10,6 @@ pass = pass1
 keyfile = 
 [pass1]
 key = ~/???
-keyfile = ???
+seed = ???
 group = ?
 title = ?
