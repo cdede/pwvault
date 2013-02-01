@@ -7,6 +7,8 @@ import os
 import sys
 import configparser
 from getpass import getpass
+from Crypto.Protocol.KDF import PBKDF2
+from base64 import b64encode,b64decode
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -43,13 +45,17 @@ def main():
     keyfile = cf1.get("main", "keyfile")
     
     key2 = cf1.get(pass1, "key")
-    pass2 = None
-    keyfile2 = cf1.get(pass1, "keyfile")
+    keyfile2 = None
+    seed=cf1.get(pass1, "seed")
+    seed = b64decode(seed)
 
     key2=os.path.expanduser(key2)
-    keyfile2=os.path.expanduser(keyfile2)
     group2=cf1.get(pass1, "group")
     title2=cf1.get(pass1, "title")
+    num = int(getpass('input num :'))
+    iterations = 5000+num
+    key = PBKDF2(str(num), seed, dkLen=32, count=iterations)
+    password4 = b64encode(key).decode()
     if options.add:
         filebuffer = getpass('input password :')
         filebuffer1 = getpass('repeat input password :')
@@ -58,9 +64,12 @@ def main():
         else:
             print ('not match')
             sys.exit()
+        salt = os.urandom(36)
+ 
 
+        print(b64encode(salt))
         db2 = KPDB(new = True)
-        db2.keyfile = keyfile2
+        db2.password = password4
         db2.create_group(group2)
         for gr1 in db2.groups:
             if group2 == gr1.title:
@@ -70,7 +79,7 @@ def main():
         db2.close()
         sys.exit()
 
-    db2 = KPDB(key2, pass2 ,keyfile2, True)
+    db2 = KPDB(key2, password4 ,keyfile2, True)
     ret=get_entries(db2, group2, title2)
     ret_pass=ret[0][1].password
     db2.close()
