@@ -1,33 +1,13 @@
 #!/usr/bin/python
 from optparse import OptionParser
 from kppy import *
-import subprocess
-import time
 import os
 import sys
 import configparser
 from getpass import getpass
-from Crypto.Protocol.KDF import PBKDF2
-from base64 import b64encode,b64decode
-
-def copy2clip(key,tip ,value):
-    print (key,'  :  ', " | %s copied to clipboard "%tip)
-    (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
-                         .communicate(value.encode()))
-    (subprocess.Popen(['xsel', '-bi'], stdin = subprocess.PIPE)
-                         .communicate(value.encode()))
-    time.sleep(9)
-    subprocess.Popen(['xsel', '-pc'])
-    subprocess.Popen(['xsel', '-bc'])
-
-def get_entries(db,gid,eid):
-    ret=[]
-    for gr1 in db.groups:
-        if gid in gr1.title:
-            for ent1 in gr1.entries:
-                if eid in ent1.title:
-                    ret.append( [gr1,ent1])
-    return ret
+from common import copy2clip, get_entries, getegid
+from cpassnum import Cpassnum
+from base64 import b64decode
 
 def main():
     parser = OptionParser()
@@ -46,16 +26,15 @@ def main():
     
     key2 = cf1.get(pass1, "key")
     keyfile2 = None
-    seed=cf1.get(pass1, "seed")
-    seed = b64decode(seed)
+    salt=b64decode(cf1.get(pass1, "salt"))
+    cpass1 = Cpassnum(salt)
+    print(cpass1.gen_salt())
 
     key2=os.path.expanduser(key2)
     group2=cf1.get(pass1, "group")
     title2=cf1.get(pass1, "title")
     num = int(getpass('input num :'))
-    iterations = 5000+num
-    key = PBKDF2(str(num), seed, dkLen=32, count=iterations)
-    password4 = b64encode(key).decode()
+    password4 = cpass1.getkey(num)
     if options.add:
         filebuffer = getpass('input password :')
         filebuffer1 = getpass('repeat input password :')
@@ -64,10 +43,6 @@ def main():
         else:
             print ('not match')
             sys.exit()
-        salt = os.urandom(36)
- 
-
-        print(b64encode(salt))
         db2 = KPDB(new = True)
         db2.password = password4
         db2.create_group(group2)
@@ -80,7 +55,7 @@ def main():
         sys.exit()
 
     db2 = KPDB(key2, password4 ,keyfile2, True)
-    ret=get_entries(db2, group2, title2)
+    ret=get_entries(db2, [group2, title2])
     ret_pass=ret[0][1].password
     db2.close()
     if keyfile == '':
@@ -88,17 +63,7 @@ def main():
     else:
         keyfile = os.path.expanduser(keyfile)
     db = KPDB(os.path.expanduser(key1), ret_pass ,keyfile, True)
-    len1=len(args)
-    if len1 == 1:
-        gid=''
-        eid=args[0]
-    elif len1==2:
-        gid=args[0]
-        eid=args[1]
-    else:
-        gid=''
-        eid=''
-    ret=get_entries(db,gid,eid)
+    ret=get_entries(db,getegid(args))
     len3=len(ret)
     if len3 == 0:
         print ('no record found ')
