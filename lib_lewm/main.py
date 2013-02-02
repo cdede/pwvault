@@ -28,7 +28,6 @@ def main():
     keyfile2 = None
     salt=b64decode(cf1.get(pass1, "salt"))
     cpass1 = Cpassnum(salt)
-    print(cpass1.gen_salt())
 
     key2=os.path.expanduser(key2)
     group2=cf1.get(pass1, "group")
@@ -36,6 +35,7 @@ def main():
     num = int(getpass('input num :'))
     password4 = cpass1.getkey(num)
     if options.add:
+        print(cpass1.gen_salt())
         filebuffer = getpass('input password :')
         filebuffer1 = getpass('repeat input password :')
         if filebuffer1 == filebuffer :
