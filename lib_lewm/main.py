@@ -5,9 +5,10 @@ import os
 import sys
 import configparser
 from getpass import getpass
-from common import copy2clip, get_entries, getegid
-from cpassnum import Cpassnum
 from base64 import b64decode
+
+from lib_lewm.common import copy2clip, get_entries, getegid
+from lib_lewm.cpassnum import Cpassnum
 
 def main():
     parser = OptionParser()
