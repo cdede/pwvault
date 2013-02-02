@@ -25,10 +25,10 @@ def getegid(lst1):
     len1=len(lst1)
     if len1 == 1:
         gid=''
-        eid=args[0]
+        eid=lst1[0]
     elif len1==2:
-        gid=args[0]
-        eid=args[1]
+        gid=lst1[0]
+        eid=lst1[1]
     else:
         gid=''
         eid=''
