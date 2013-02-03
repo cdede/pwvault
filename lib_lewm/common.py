@@ -1,6 +1,8 @@
 
 import subprocess
 import time
+import os
+
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
     (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
@@ -33,3 +35,12 @@ def getegid(lst1):
         gid=''
         eid=''
     return [gid,eid]
+
+def getfilename(file1):
+    if file1 == '':
+        file1 = None
+    else:
+        file1 = os.path.expanduser(file1)
+
+    return file1
+

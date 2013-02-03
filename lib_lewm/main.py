@@ -7,7 +7,7 @@ import configparser
 from getpass import getpass
 from base64 import b64decode
 
-from lib_lewm.common import copy2clip, get_entries, getegid
+from lib_lewm.common import copy2clip, get_entries, getegid, getfilename
 from lib_lewm.cpassnum import Cpassnum
 
 def main():
@@ -26,7 +26,7 @@ def main():
     keyfile = cf1.get("main", "keyfile")
     
     key2 = cf1.get(pass1, "key")
-    keyfile2 = None
+    keyfile2 = cf1.get(pass1, "keyfile")
     salt=b64decode(cf1.get(pass1, "salt"))
     cpass1 = Cpassnum(salt)
 
@@ -55,15 +55,11 @@ def main():
         db2.close()
         sys.exit()
 
-    db2 = KPDB(key2, password4 ,keyfile2, True)
+    db2 = KPDB(key2, password4 ,getfilename(keyfile2), True)
     ret=get_entries(db2, [group2, title2])
     ret_pass=ret[0][1].password
     db2.close()
-    if keyfile == '':
-        keyfile = None
-    else:
-        keyfile = os.path.expanduser(keyfile)
-    db = KPDB(os.path.expanduser(key1), ret_pass ,keyfile, True)
+    db = KPDB(os.path.expanduser(key1), ret_pass ,getfilename(keyfile), True)
     ret=get_entries(db,getegid(args))
     len3=len(ret)
     if len3 == 0:
