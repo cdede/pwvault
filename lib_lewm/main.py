@@ -24,9 +24,11 @@ def main():
     key1 = cf1.get("main", "key")
     pass1 = cf1.get("main", "pass")
     keyfile = cf1.get("main", "keyfile")
+    keyfile = getfilename(keyfile)
     
     key2 = cf1.get(pass1, "key")
     keyfile2 = cf1.get(pass1, "keyfile")
+    keyfile2 = getfilename(keyfile2)
     salt=b64decode(cf1.get(pass1, "salt"))
     cpass1 = Cpassnum(salt)
 
@@ -46,6 +48,7 @@ def main():
             sys.exit()
         db2 = KPDB(new = True)
         db2.password = password4
+        db2.keyfile = keyfile2
         db2.create_group(group2)
         for gr1 in db2.groups:
             if group2 == gr1.title:
@@ -55,11 +58,11 @@ def main():
         db2.close()
         sys.exit()
 
-    db2 = KPDB(key2, password4 ,getfilename(keyfile2), True)
+    db2 = KPDB(key2, password4 ,keyfile2, True)
     ret=get_entries(db2, [group2, title2])
     ret_pass=ret[0][1].password
     db2.close()
-    db = KPDB(os.path.expanduser(key1), ret_pass ,getfilename(keyfile), True)
+    db = KPDB(os.path.expanduser(key1), ret_pass ,keyfile, True)
     ret=get_entries(db,getegid(args))
     len3=len(ret)
     if len3 == 0:
