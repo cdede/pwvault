@@ -2,6 +2,9 @@
 import subprocess
 import time
 import os
+import configparser
+from getpass import getpass
+from kppy import KPDB
 
 def copy2clip(key,tip ,value):
     print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -13,29 +16,6 @@ def copy2clip(key,tip ,value):
     subprocess.Popen(['xsel', '-pc'])
     subprocess.Popen(['xsel', '-bc'])
 
-def get_entries(db,geid):
-    gid,eid=geid
-    ret=[]
-    for gr1 in db.groups:
-        if gid in gr1.title:
-            for ent1 in gr1.entries:
-                if eid in ent1.title:
-                    ret.append( [gr1,ent1])
-    return ret
-
-def getegid(lst1):
-    len1=len(lst1)
-    if len1 == 1:
-        gid=''
-        eid=lst1[0]
-    elif len1==2:
-        gid=lst1[0]
-        eid=lst1[1]
-    else:
-        gid=''
-        eid=''
-    return [gid,eid]
-
 def getfilename(file1):
     if file1 == '':
         file1 = None
@@ -43,4 +23,16 @@ def getfilename(file1):
         file1 = os.path.expanduser(file1)
 
     return file1
+
+def opendb(filename):
+    filename=os.path.expanduser(filename)
+    cf1 = configparser.ConfigParser()
+    cf1.read(filename)
+    key1 = cf1.get("main", "key")
+    key1 = getfilename(key1)
+    keyfile = cf1.get("main", "keyfile")
+    keyfile = getfilename(keyfile)
+    ret_pass = getpass('input password :')
+    db =KPDB(key1, ret_pass ,keyfile, True)
+    return db
 
