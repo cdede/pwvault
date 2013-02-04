@@ -8,22 +8,31 @@ class HelloWorld(Cmd):
     
     def __init__(self, db):
         Cmd.__init__(self)
-        groups={}
-        self.cur_root=None
+        self.db=db
+        self.cur_root=self.db._root_group
+        self.change_root()
         self.isuser=True
-        for gr1 in db.groups:
-            if self.cur_root ==None:
-                self.cur_root=gr1
-                self.change_group()
-            groups[gr1.title]=gr1
-        self.groups=groups
+
+    def change_root(self):    
+        self.groups=self.cur_root.children
+        self.comp_group = [ i.title
+                  for i in self.groups 
+                  ]
+        tmp1=self.comp_group
+        self.dict_groups=dict(zip(tmp1, range(len(tmp1))))
 
     def do_group(self, person):
         if person:
-            self.cur_root = self.groups[person]
-            self.change_group()
+            if person not in self.dict_groups:
+                return
+            self.cur_root = self.groups[self.dict_groups[person]]
         else:
-            print('hi')
+            if self.cur_root is self.db._root_group:
+                return
+            else:
+                self.cur_root = self.cur_root.parent
+        self.change_root()
+        self.change_group()
 
     def do_isuser(self):
         self.isuser = not self.isuser 
@@ -39,7 +48,7 @@ class HelloWorld(Cmd):
                            'group the named person',
                            ]))
     def complete_group(self, text, line, begidx, endidx):
-        comp1 = list(self.groups.keys())
+        comp1 = self.comp_group
         if not text:
             completions = comp1[:]
         else:
@@ -51,6 +60,8 @@ class HelloWorld(Cmd):
 
     def do_entrie(self, person):
         if person:
+            if person not in self.entries:
+                return
             tmp1 = self.entries[person]
             print('comment :  ',tmp1.comment)
             print('url :  ',tmp1.url)
@@ -81,8 +92,8 @@ class HelloWorld(Cmd):
     def do_EOF(self, line):
         return True
 
-def main():
-    db=opendb('~/.config/lewm/config')
+def main(filename):
+    db=opendb(filename)
     HelloWorld(db).cmdloop()
 
 if __name__ == '__main__':
