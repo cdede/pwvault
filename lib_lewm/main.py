@@ -11,12 +11,10 @@ class HelloWorld(Cmd):
         super(HelloWorld, self).__init__()
         self.db=db
         self.cur_root=self.db._root_group
-        self.paths=[]
         self._hist    = []      ## No history yet
         self._loc_ls = []
         self.entries={}
-        self.prompt = '>>' + ''.join(self.paths)+': '
-        self.change_root()
+        self.onecmd('cd')
         self.isuser=True
 
     def precmd(self, line):
@@ -56,18 +54,25 @@ class HelloWorld(Cmd):
                 range1+=1
 
     def do_cd(self, person):
-        if person:
+        if not person:
+            self.cur_root = self.db._root_group
+            self.paths=[]
+            self.prompt = '>>' + ''.join(self.paths)+': '
+        elif person !='..':
             if person not in self.dict_groups:
                 return
             tmp1 = self.groups[self.dict_groups[person]]
             self.cur_root = tmp1
             self.paths.append(tmp1.title+'/')
-        else:
+        elif person =='..':
             if self.cur_root is self.db._root_group:
                 return
             else:
                 self.cur_root = self.cur_root.parent
                 self.paths.pop()
+        else:
+            pass
+
         self.change_root()
         self.change_group()
 
