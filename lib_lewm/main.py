@@ -12,10 +12,21 @@ class HelloWorld(Cmd):
         self.db=db
         self.cur_root=self.db._root_group
         self.paths=[]
+        self._hist    = []      ## No history yet
+        self._loc_ls = []
         self.entries={}
         self.prompt = '>>' + ''.join(self.paths)+': '
         self.change_root()
         self.isuser=True
+
+    def precmd(self, line):
+        """ history
+        """
+        tmp1 = line.strip() 
+        if tmp1 not in self._hist:
+            self._hist += [ tmp1 ]
+        return line
+
 
     def postcmd(self, stop, line):
         self.prompt = '>>' + ''.join(self.paths)+': '
@@ -28,6 +39,21 @@ class HelloWorld(Cmd):
                   ]
         tmp1=self.comp_group
         self.dict_groups=dict(zip(tmp1, range(len(tmp1))))
+
+    def do_hist(self, num):
+        if num:
+            try :
+                num=int(num)
+                tmp1 = self._hist[num]
+                print(tmp1)
+                self.onecmd(tmp1)
+            except:
+                return
+        else:
+            range1=0
+            for i in self._hist:
+                print (range1,i)
+                range1+=1
 
     def do_cd(self, person):
         if person:
@@ -45,6 +71,11 @@ class HelloWorld(Cmd):
         self.change_root()
         self.change_group()
 
+    def _print_ls(self, key):
+        for i in self._loc_ls :
+            if key in i :
+                print(i)
+
     def do_ls(self, person):
         try:
             options, remainder = getopt.getopt(person.split(), 'l')
@@ -54,13 +85,18 @@ class HelloWorld(Cmd):
         for opt, arg in options:
             if opt == '-l':
                 islist = True
+        text = ''
+        if len(remainder)>=1:
+            text = remainder[0]
+        self._loc_ls=[]
         for i,e in self.entries.items():
             if islist:
-                print(i,e.username)
+                self._loc_ls.append( i+' ' +e.username)
             else:
-                print (i)
+                self._loc_ls.append( i)
         for i in self.comp_group:
-            print (i+'/')
+            self._loc_ls.append(i+'/')
+        self._print_ls(text)
 
     def do_isuser(self):
         self.isuser = not self.isuser 
