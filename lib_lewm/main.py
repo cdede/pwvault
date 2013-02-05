@@ -59,6 +59,9 @@ class HelloWorld(Cmd):
                 print(i,e.username)
             else:
                 print (i)
+        for i in self.comp_group:
+            print (i+'/')
+
     def do_isuser(self):
         self.isuser = not self.isuser 
 
