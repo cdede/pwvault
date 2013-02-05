@@ -2,16 +2,24 @@
 from cmd import Cmd
 from kppy import *
 from lib_lewm.common import copy2clip,  opendb
+import getopt
 
 class HelloWorld(Cmd):
     """Simple command processor example."""
     
     def __init__(self, db):
-        Cmd.__init__(self)
+        super(HelloWorld, self).__init__()
         self.db=db
         self.cur_root=self.db._root_group
+        self.paths=[]
+        self.entries={}
+        self.prompt = '>>' + ''.join(self.paths)+': '
         self.change_root()
         self.isuser=True
+
+    def postcmd(self, stop, line):
+        self.prompt = '>>' + ''.join(self.paths)+': '
+        return super(HelloWorld,self).postcmd( stop, line)
 
     def change_root(self):    
         self.groups=self.cur_root.children
@@ -21,19 +29,36 @@ class HelloWorld(Cmd):
         tmp1=self.comp_group
         self.dict_groups=dict(zip(tmp1, range(len(tmp1))))
 
-    def do_group(self, person):
+    def do_cd(self, person):
         if person:
             if person not in self.dict_groups:
                 return
-            self.cur_root = self.groups[self.dict_groups[person]]
+            tmp1 = self.groups[self.dict_groups[person]]
+            self.cur_root = tmp1
+            self.paths.append(tmp1.title+'/')
         else:
             if self.cur_root is self.db._root_group:
                 return
             else:
                 self.cur_root = self.cur_root.parent
+                self.paths.pop()
         self.change_root()
         self.change_group()
 
+    def do_ls(self, person):
+        try:
+            options, remainder = getopt.getopt(person.split(), 'l')
+        except:
+            return
+        islist = False
+        for opt, arg in options:
+            if opt == '-l':
+                islist = True
+        for i,e in self.entries.items():
+            if islist:
+                print(i,e.username)
+            else:
+                print (i)
     def do_isuser(self):
         self.isuser = not self.isuser 
 
@@ -43,11 +68,11 @@ class HelloWorld(Cmd):
             entries[ent1.title]=ent1
         self.entries=entries
 
-    def help_group(self):
-        print('\n'.join([ 'group [person]',
-                           'group the named person',
+    def help_cd(self):
+        print('\n'.join([ 'cd [person]',
+                           'cd the dir',
                            ]))
-    def complete_group(self, text, line, begidx, endidx):
+    def complete_cd(self, text, line, begidx, endidx):
         comp1 = self.comp_group
         if not text:
             completions = comp1[:]
@@ -58,7 +83,7 @@ class HelloWorld(Cmd):
                             ]
         return completions
 
-    def do_entrie(self, person):
+    def do_cat(self, person):
         if person:
             if person not in self.entries:
                 return
@@ -71,13 +96,13 @@ class HelloWorld(Cmd):
         else:
             print('hi')
 
-    def help_entrie(self):
-        print('\n'.join([ 'entrie [person]',
-                           'entrie the named person',
+    def help_cat(self):
+        print('\n'.join([ 'cat [person]',
+                           'cat the person',
                            ]))
     
 
-    def complete_entrie(self, text, line, begidx, endidx):
+    def complete_cat(self, text, line, begidx, endidx):
         comp1 = list(self.entries.keys())
         if not text:
             completions = comp1[:]
