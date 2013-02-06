@@ -4,11 +4,11 @@ from kppy import *
 from lib_lewm.common import copy2clip,  opendb
 import getopt
 
-class HelloWorld(Cmd):
+class CmdKeepass(Cmd):
     """Simple command processor example."""
     
     def __init__(self, db):
-        super(HelloWorld, self).__init__()
+        super(CmdKeepass, self).__init__()
         self.db=db
         self.cur_root=self.db._root_group
         self._hist    = []      ## No history yet
@@ -28,7 +28,7 @@ class HelloWorld(Cmd):
 
     def postcmd(self, stop, line):
         self.prompt = '>>' + ''.join(self.paths)+': '
-        return super(HelloWorld,self).postcmd( stop, line)
+        return super(CmdKeepass,self).postcmd( stop, line)
 
     def change_root(self):    
         self.groups=self.cur_root.children
@@ -109,7 +109,8 @@ class HelloWorld(Cmd):
     def change_group(self):
         entries={}
         for ent1 in self.cur_root.entries:
-            entries[ent1.title]=ent1
+            if ent1.title != 'Meta-Info' and ent1.username != 'SYSTEM':
+                entries[ent1.title]=ent1
         self.entries=entries
 
     def help_cd(self):
@@ -159,11 +160,12 @@ class HelloWorld(Cmd):
 
 
     def do_EOF(self, line):
+        self.db.close()
         return True
 
 def main(filename):
     db=opendb(filename)
-    HelloWorld(db).cmdloop()
+    CmdKeepass(db).cmdloop()
 
 if __name__ == '__main__':
     main()
