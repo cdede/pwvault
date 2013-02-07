@@ -13,8 +13,10 @@ def copy2clip(key,tip ,value):
     (subprocess.Popen(['xsel', '-bi'], stdin = subprocess.PIPE)
                          .communicate(value.encode()))
     time.sleep(9)
-    subprocess.Popen(['xsel', '-pc'])
-    subprocess.Popen(['xsel', '-bc'])
+    tmp1 = subprocess.Popen(['xsel', '-pc'])
+    tmp1.wait()
+    tmp1 = subprocess.Popen(['xsel', '-bc'])
+    tmp1.wait()
 
 def getfilename(file1):
     if file1 == '':
