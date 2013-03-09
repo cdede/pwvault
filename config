@@ -1,5 +1,5 @@
 [main]
-key = ~/lewm/w.gpg
-#key = ~/lewm/test.kdb
+#key = ~/lewm/w.gpg
+key = ~/lewm/test.kdb
 keyfile = 
 sleep = 9

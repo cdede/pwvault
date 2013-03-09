@@ -13,20 +13,21 @@ class CmdKeepass(Cmd):
     def __init__(self, db,sleep=0):
         super(CmdKeepass, self).__init__()
         self.sleep =sleep
+        self.prompt = '>>' + ': '
         self._hist    = []      ## No history yet
-        self._loc_ls = []
         self._exp = {}
-        self.paths = []
-        self.entries={}
         if type(db) == type({}):
             self._exp = db
             self.isdb=False
         else:
+            self.entries={}
             self.db=db
             self.isdb=True
             self.cur_root=self.db._root_group
+            self.paths = []
             self.walk()
-        self.isuser=True
+            self.db.close()
+
     def copy2clip(self,key,tip ,value):
         print (key,'  :  ', " | %s copied to clipboard "%tip)
         (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
@@ -47,10 +48,6 @@ class CmdKeepass(Cmd):
             self._hist += [ tmp1 ]
         return line
 
-
-    def postcmd(self, stop, line):
-        self.prompt = '>>' + ''.join(self.paths)+': '
-        return super(CmdKeepass,self).postcmd( stop, line)
 
     def do_hist(self, num):
         if num:
@@ -93,9 +90,6 @@ class CmdKeepass(Cmd):
         self._loc_ls.sort()
         self._print_ls(text)
 
-    def do_isuser(self):
-        self.isuser = not self.isuser 
-
     def change_group(self):
         entries={}
         for ent1 in self.cur_root.entries:
@@ -111,10 +105,7 @@ class CmdKeepass(Cmd):
             print('comment :  ',tmp1['comment'])
             print('url :  ',tmp1['url'])
             self.copy2clip(person,'password',tmp1['password'])
-            if self.isuser:
-                self.copy2clip(person,'username',tmp1['username'])
-        else:
-            print('hi')
+            self.copy2clip(person,'username',tmp1['username'])
 
     def walk(self ):
           self.groups=self.cur_root.children
@@ -165,7 +156,6 @@ class CmdKeepass(Cmd):
 
 
     def do_EOF(self, line):
-        self.db.close()
         return True
 
 def main(filename):
