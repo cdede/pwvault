@@ -124,7 +124,7 @@ class CmdKeepass(Cmd):
           for i in self.groups :
               self.cur_root = i
               self.change_group()
-              self.paths.append(i.title+'/')
+              self.paths.append(i.title+'_')
               self.path=(''.join(self.paths))
               self.walk()
               self.cur_root = self.cur_root.parent

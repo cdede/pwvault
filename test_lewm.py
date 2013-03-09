@@ -19,12 +19,12 @@ class AppTest(unittest.TestCase):
           self.db.close()
 
       def test_ls(self):
-          self.assertTrue( self.cmd._exp== {'Internet/e': {'comment': '', 'username': 'e', 'password': 'e', 'url': 'e'}, 'Internet/a/c': {'comment': '', 'username': 'c', 'password': 'c', 'url': 'c'}})
+          self.assertTrue( self.cmd._exp== {'Internet_e': {'comment': '', 'username': 'e', 'password': 'e', 'url': 'e'}, 'Internet_a_c': {'comment': '', 'username': 'c', 'password': 'c', 'url': 'c'}})
           self.cmd.do_ls('')
-          self.assertTrue(self.cmd._loc_ls==['Internet/a/c', 'Internet/e'])
+          self.assertTrue(self.cmd._loc_ls==['Internet_a_c', 'Internet_e'])
           self.cmd.do_ls('-l')
-          self.assertTrue (self.cmd._loc_ls==['Internet/a/c c', 'Internet/e e'])
+          self.assertTrue (self.cmd._loc_ls==['Internet_a_c c', 'Internet_e e'])
       def test_cat(self):
-          self.cmd.do_cat('Internet/a/c')
+          self.cmd.do_cat('Internet_a_c')
 if __name__ == '__main__':
     unittest.main()
