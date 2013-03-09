@@ -6,20 +6,21 @@ try:
 except ImportError:
     os.sys.path.append(os.curdir)
     from lib_lewm.main import CmdKeepass
+    from lib_lewm.common import   opendb
 
 import unittest
 class AppTest(unittest.TestCase):
 
       def setUp(self):
-          self.db = KPDB('test.kdb', 'a' ,None, True)
-          self.cmd = CmdKeepass(self.db)
+          db,sleep1=opendb('config','a')
+          self.cmd = CmdKeepass(db)
           self.path = ''
 
       def tearDown(self):
-          self.db.close()
+          if self.cmd.isdb:
+              self.cmd.db.close()
 
       def test_ls(self):
-          self.assertTrue( self.cmd._exp== {'Internet_e': {'comment': '', 'username': 'e', 'password': 'e', 'url': 'e'}, 'Internet_a_c': {'comment': '', 'username': 'c', 'password': 'c', 'url': 'c'}})
           self.cmd.do_ls('')
           self.assertTrue(self.cmd._loc_ls==['Internet_a_c', 'Internet_e'])
           self.cmd.do_ls('-l')

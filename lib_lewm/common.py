@@ -3,6 +3,8 @@ import os
 import configparser
 from getpass import getpass
 from kppy import KPDB
+import subprocess
+import json
 
 def getfilename(file1):
     if file1 == '':
@@ -12,16 +14,23 @@ def getfilename(file1):
 
     return file1
 
-def opendb(filename):
+def opendb(filename,password1=''):
     filename=os.path.expanduser(filename)
     cf1 = configparser.ConfigParser()
     cf1.read(filename)
     key1 = cf1.get("main", "key")
     key1 = getfilename(key1)
-    keyfile = cf1.get("main", "keyfile")
     sleep1 = int(cf1.get("main", "sleep"))
-    keyfile = getfilename(keyfile)
-    ret_pass = getpass('input password :')
-    db =KPDB(key1, ret_pass ,keyfile, True)
+    if os.path.splitext(key1)[1] == '.gpg':
+        ret= subprocess.Popen(args='gpg --output - %s' % key1, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
+        db=json.loads(ret.decode("utf-8"))
+    else:
+        keyfile = cf1.get("main", "keyfile")
+        keyfile = getfilename(keyfile)
+        if password1 == '':
+            ret_pass = getpass('input password :')
+        else:
+            ret_pass = password1
+        db =KPDB(key1, ret_pass ,keyfile, True)
     return db,sleep1
 

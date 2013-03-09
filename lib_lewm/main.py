@@ -13,15 +13,20 @@ class CmdKeepass(Cmd):
     def __init__(self, db,sleep=0):
         super(CmdKeepass, self).__init__()
         self.sleep =sleep
-        self.db=db
-        self.cur_root=self.db._root_group
         self._hist    = []      ## No history yet
         self._loc_ls = []
         self._exp = {}
         self.paths = []
         self.entries={}
+        if type(db) == type({}):
+            self._exp = db
+            self.isdb=False
+        else:
+            self.db=db
+            self.isdb=True
+            self.cur_root=self.db._root_group
+            self.walk()
         self.isuser=True
-        self.walk()
     def copy2clip(self,key,tip ,value):
         print (key,'  :  ', " | %s copied to clipboard "%tip)
         (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
@@ -149,6 +154,9 @@ class CmdKeepass(Cmd):
         return completions
 
     def do_export(self, key):
+        if not self.isdb :
+            print('not db')
+            return
         str1=json.dumps(self._exp,indent=4)
         p = subprocess.Popen([ 'gpg' ,'-er',   key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
         p.stdin.write(bytes(str1 + "\n", "ascii"))
