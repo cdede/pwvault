@@ -5,6 +5,7 @@ from lib_lewm.common import   opendb
 import getopt
 import subprocess
 import time
+import json
 
 class CmdKeepass(Cmd):
     """Simple command processor example."""
@@ -146,6 +147,13 @@ class CmdKeepass(Cmd):
                             if f.startswith(text)
                             ]
         return completions
+
+    def do_export(self, key):
+        str1=json.dumps(self._exp,indent=4)
+        p = subprocess.Popen([ 'gpg' ,'-er',   key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+        p.stdin.write(bytes(str1 + "\n", "ascii"))
+        assert(b''==p.communicate()[0])
+        p.stdin.close()
 
 
     def do_EOF(self, line):
