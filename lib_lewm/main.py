@@ -13,6 +13,7 @@ class CmdKeepass(Cmd):
         self.cur_root=self.db._root_group
         self._hist    = []      ## No history yet
         self._loc_ls = []
+        self._exp = {}
         self.entries={}
         self.onecmd('cd')
         self.isuser=True
@@ -140,6 +141,45 @@ class CmdKeepass(Cmd):
                 copy2clip(self.cur_root.title+'.'+tmp1.title,'username',tmp1.username)
         else:
             print('hi')
+
+    def test_cat(self, person):
+        if person:
+            if person not in self.entries:
+                return
+            tmp1 = self.entries[person]
+            return tmp1
+        else:
+            print('hi')
+
+    def walk(self, list1):
+          list2 = [ i   for i in list1
+                  if i[-1]=='/'
+                  ]
+          list3 = [ i   for i in list1
+                  if i[-1]!='/'
+                  ]
+          for j in list3:
+              a1=self.test_cat(j)
+              tmp1={}
+              tmp1['comment']=a1.comment
+              tmp1['url']=a1.url
+              tmp1['username']=a1.username
+              tmp1['password']=a1.password
+              self._exp[self.path+a1.title]=tmp1 
+
+          for i in list2:
+              self.do_cd(i[:-1])
+              self.do_ls('')
+              list1 = self._loc_ls
+              self.path=(''.join(self.paths))
+              self.walk(list1)
+              self.do_cd('..')
+    
+    def do_export(self):
+        self.do_ls('')
+        list1 = self._loc_ls
+        self.walk(list1)
+
 
     def help_cat(self):
         print('\n'.join([ 'cat [person]',
