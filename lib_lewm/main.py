@@ -1,22 +1,37 @@
 #!/usr/bin/python
 from cmd import Cmd
 from kppy import *
-from lib_lewm.common import copy2clip,  opendb
+from lib_lewm.common import   opendb
 import getopt
+import subprocess
+import time
 
 class CmdKeepass(Cmd):
     """Simple command processor example."""
     
-    def __init__(self, db):
+    def __init__(self, db,sleep=0):
         super(CmdKeepass, self).__init__()
+        self.sleep =sleep
         self.db=db
         self.cur_root=self.db._root_group
         self._hist    = []      ## No history yet
         self._loc_ls = []
         self._exp = {}
+        self.paths = []
         self.entries={}
-        self.onecmd('cd')
         self.isuser=True
+        self.walk()
+    def copy2clip(self,key,tip ,value):
+        print (key,'  :  ', " | %s copied to clipboard "%tip)
+        (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
+                         .communicate(value.encode()))
+        (subprocess.Popen(['xsel', '-bi'], stdin = subprocess.PIPE)
+                         .communicate(value.encode()))
+        time.sleep(self.sleep)
+        tmp1 = subprocess.Popen(['xsel', '-pc'])
+        tmp1.wait()
+        tmp1 = subprocess.Popen(['xsel', '-bc'])
+        tmp1.wait()
 
     def precmd(self, line):
         """ history
@@ -30,14 +45,6 @@ class CmdKeepass(Cmd):
     def postcmd(self, stop, line):
         self.prompt = '>>' + ''.join(self.paths)+': '
         return super(CmdKeepass,self).postcmd( stop, line)
-
-    def change_root(self):    
-        self.groups=self.cur_root.children
-        self.comp_group = [ i.title
-                  for i in self.groups 
-                  ]
-        tmp1=self.comp_group
-        self.dict_groups=dict(zip(tmp1, range(len(tmp1))))
 
     def do_hist(self, num):
         if num:
@@ -53,29 +60,6 @@ class CmdKeepass(Cmd):
             for i in self._hist:
                 print (range1,i)
                 range1+=1
-
-    def do_cd(self, person):
-        if not person:
-            self.cur_root = self.db._root_group
-            self.paths=[]
-            self.prompt = '>>' + ''.join(self.paths)+': '
-        elif person !='..':
-            if person not in self.dict_groups:
-                return
-            tmp1 = self.groups[self.dict_groups[person]]
-            self.cur_root = tmp1
-            self.paths.append(tmp1.title+'/')
-        elif person =='..':
-            if self.cur_root is self.db._root_group:
-                return
-            else:
-                self.cur_root = self.cur_root.parent
-                self.paths.pop()
-        else:
-            pass
-
-        self.change_root()
-        self.change_group()
 
     def _print_ls(self, key):
         for i in self._loc_ls :
@@ -95,13 +79,12 @@ class CmdKeepass(Cmd):
         if len(remainder)>=1:
             text = remainder[0]
         self._loc_ls=[]
-        for i,e in self.entries.items():
+        for i,e in self._exp.items():
             if islist:
-                self._loc_ls.append( i+' ' +e.username)
+                self._loc_ls.append( i+' ' +e['username'])
             else:
                 self._loc_ls.append( i)
-        for i in self.comp_group:
-            self._loc_ls.append(i+'/')
+        self._loc_ls.sort()
         self._print_ls(text)
 
     def do_isuser(self):
@@ -114,52 +97,23 @@ class CmdKeepass(Cmd):
                 entries[ent1.title]=ent1
         self.entries=entries
 
-    def help_cd(self):
-        print('\n'.join([ 'cd [person]',
-                           'cd the dir',
-                           ]))
-    def complete_cd(self, text, line, begidx, endidx):
-        comp1 = self.comp_group
-        if not text:
-            completions = comp1[:]
-        else:
-            completions = [ f
-                            for f in comp1
-                            if f.startswith(text)
-                            ]
-        return completions
-
     def do_cat(self, person):
         if person:
-            if person not in self.entries:
+            if person not in self._exp:
                 return
-            tmp1 = self.entries[person]
-            print('comment :  ',tmp1.comment)
-            print('url :  ',tmp1.url)
-            copy2clip(self.cur_root.title+'.'+tmp1.title,'password',tmp1.password)
+            tmp1 = self._exp[person]
+            print('comment :  ',tmp1['comment'])
+            print('url :  ',tmp1['url'])
+            self.copy2clip(person,'password',tmp1['password'])
             if self.isuser:
-                copy2clip(self.cur_root.title+'.'+tmp1.title,'username',tmp1.username)
+                self.copy2clip(person,'username',tmp1['username'])
         else:
             print('hi')
 
-    def test_cat(self, person):
-        if person:
-            if person not in self.entries:
-                return
-            tmp1 = self.entries[person]
-            return tmp1
-        else:
-            print('hi')
+    def walk(self ):
+          self.groups=self.cur_root.children
 
-    def walk(self, list1):
-          list2 = [ i   for i in list1
-                  if i[-1]=='/'
-                  ]
-          list3 = [ i   for i in list1
-                  if i[-1]!='/'
-                  ]
-          for j in list3:
-              a1=self.test_cat(j)
+          for i,a1 in self.entries.items() :
               tmp1={}
               tmp1['comment']=a1.comment
               tmp1['url']=a1.url
@@ -167,20 +121,15 @@ class CmdKeepass(Cmd):
               tmp1['password']=a1.password
               self._exp[self.path+a1.title]=tmp1 
 
-          for i in list2:
-              self.do_cd(i[:-1])
-              self.do_ls('')
-              list1 = self._loc_ls
+          for i in self.groups :
+              self.cur_root = i
+              self.change_group()
+              self.paths.append(i.title+'/')
               self.path=(''.join(self.paths))
-              self.walk(list1)
-              self.do_cd('..')
+              self.walk()
+              self.cur_root = self.cur_root.parent
+              self.paths.pop()
     
-    def do_export(self):
-        self.do_ls('')
-        list1 = self._loc_ls
-        self.walk(list1)
-
-
     def help_cat(self):
         print('\n'.join([ 'cat [person]',
                            'cat the person',
@@ -188,7 +137,7 @@ class CmdKeepass(Cmd):
     
 
     def complete_cat(self, text, line, begidx, endidx):
-        comp1 = list(self.entries.keys())
+        comp1 = list(self._exp.keys())
         if not text:
             completions = comp1[:]
         else:
@@ -204,8 +153,8 @@ class CmdKeepass(Cmd):
         return True
 
 def main(filename):
-    db=opendb(filename)
-    CmdKeepass(db).cmdloop()
+    db,sleep1=opendb(filename)
+    CmdKeepass(db,sleep1).cmdloop()
 
 if __name__ == '__main__':
     main()

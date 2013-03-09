@@ -1,3 +1,4 @@
 [main]
 key = ~/lewm/test.kdb
 keyfile = 
+sleep = 9

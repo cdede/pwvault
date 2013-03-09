@@ -18,9 +18,13 @@ class AppTest(unittest.TestCase):
       def tearDown(self):
           self.db.close()
 
-      def test_export(self):
-          self.cmd.do_export()
-          self.assertTrue( self.cmd._exp== {'Internet/e': {'comment': '', 'username': 'e', 'password': 'e', 'url': 'e'}, 'Internet/a/c': {'comment': '', 'username': 'c', 'password': 'c', 'url': 'c'}}
-                  )
+      def test_ls(self):
+          self.assertTrue( self.cmd._exp== {'Internet/e': {'comment': '', 'username': 'e', 'password': 'e', 'url': 'e'}, 'Internet/a/c': {'comment': '', 'username': 'c', 'password': 'c', 'url': 'c'}})
+          self.cmd.do_ls('')
+          self.assertTrue(self.cmd._loc_ls==['Internet/a/c', 'Internet/e'])
+          self.cmd.do_ls('-l')
+          self.assertTrue (self.cmd._loc_ls==['Internet/a/c c', 'Internet/e e'])
+      def test_cat(self):
+          self.cmd.do_cat('Internet/a/c')
 if __name__ == '__main__':
     unittest.main()
