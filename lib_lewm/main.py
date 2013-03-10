@@ -14,8 +14,6 @@ class CmdKeepass(Cmd):
     def __init__(self, db,sleep=0):
         super(CmdKeepass, self).__init__()
         self.sleep =sleep
-        self.prompt = '>>' + ': '
-        self._hist    = []      ## No history yet
         if type(db) == type({}):
             self._exp = db
             self.isdb=False
@@ -34,30 +32,6 @@ class CmdKeepass(Cmd):
         tmp1.wait()
         tmp1 = subprocess.Popen(['xsel', '-bc'])
         tmp1.wait()
-
-    def precmd(self, line):
-        """ history
-        """
-        tmp1 = line.strip() 
-        if tmp1 not in self._hist:
-            self._hist += [ tmp1 ]
-        return line
-
-
-    def do_hist(self, num):
-        if num:
-            try :
-                num=int(num)
-                tmp1 = self._hist[num]
-                print(tmp1)
-                self.onecmd(tmp1)
-            except:
-                return
-        else:
-            range1=0
-            for i in self._hist:
-                print (range1,i)
-                range1+=1
 
     def _print_ls(self, key):
         for i in self._loc_ls :
@@ -94,13 +68,6 @@ class CmdKeepass(Cmd):
             print('url :  ',tmp1['url'])
             self.copy2clip(person,'password',tmp1['password'])
             self.copy2clip(person,'username',tmp1['username'])
-
-   
-    def help_cat(self):
-        print('\n'.join([ 'cat [person]',
-                           'cat the person',
-                           ]))
-    
 
     def complete_cat(self, text, line, begidx, endidx):
         comp1 = list(self._exp.keys())

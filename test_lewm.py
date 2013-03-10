@@ -11,7 +11,7 @@ except ImportError:
 
 import unittest
 
-FLAG=1
+FLAG=0
 
 class AppTest(unittest.TestCase):
 
