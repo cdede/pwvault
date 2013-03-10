@@ -5,7 +5,7 @@ try:
     from lib_lewm.main import main1
 except ImportError:
     os.sys.path.append(os.curdir)
-    from lib_lewm.main import CmdKeepass
+    from lib_lewm.keepass import Keepass
     from lib_lewm.export_db import ExportDb
     from lib_lewm.common import   opendb
 
@@ -22,20 +22,18 @@ class AppTest(unittest.TestCase):
             db,sleep1=opendb('config','a')
         else:
             db,sleep1=opendb('config1','a')
-        self.cmd = CmdKeepass(db)
+        self.cmd = Keepass(db)
 
     def tearDown(self):
         pass
 
-    def test_ls(self):
-        self.cmd.do_ls('')
-        self.assertTrue(self.cmd._loc_ls==['Internet_a_c', 'Internet_e'])
-        self.cmd.do_ls('-l')
-        self.assertTrue (self.cmd._loc_ls==['Internet_a_c c', 'Internet_e e'])
-
-
-    def test_cat(self):
-        self.cmd.do_cat('Internet_a_c')
+    def test_start(self):
+        self.cmd.start('')
+        self.assertTrue(len(self.cmd._loc_cat)==2)
+        self.cmd.start('a')
+        self.assertTrue(len(self.cmd._loc_cat)==1)
+        self.cmd.start('as')
+        self.assertTrue(len(self.cmd._loc_cat)==0)
 
     def test_export(self):
         if FLAG == 1:
