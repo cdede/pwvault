@@ -6,7 +6,6 @@ from optparse import OptionParser
 import sys
     
 def main(filename):
-    db,sleep1=opendb(filename)
     parser = OptionParser()
     parser.add_option("-e", "--export", action="store_true", dest="export",
                       help="export keyfile", default=False)
@@ -15,6 +14,10 @@ def main(filename):
     (options, args) = parser.parse_args()
     islist = False
     if options.export:
+        if len(args) != 1 :
+            print('no key')
+            sys.exit()
+        db,sleep1=opendb(filename)
         if type(db) == type({}):
             sys.exit()
         exp1 = ExportDb(db)
@@ -26,6 +29,7 @@ def main(filename):
         tmp=''
     else:
         tmp=args[0]
+    db,sleep1=opendb(filename)
     Keepass(db,sleep1,islist).start(tmp)
 
 if __name__ == '__main__':
