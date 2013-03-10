@@ -3,9 +3,9 @@ from cmd import Cmd
 from kppy import *
 from lib_lewm.common import   opendb
 from lib_lewm.export_db import   ExportDb
+from lib_lewm.copy_clip import   CopyClip
 import getopt
 import subprocess
-import time
 import json
 
 class CmdKeepass(Cmd):
@@ -13,25 +13,13 @@ class CmdKeepass(Cmd):
     
     def __init__(self, db,sleep=0):
         super(CmdKeepass, self).__init__()
-        self.sleep =sleep
+        self.copy2clip=CopyClip(sleep).copy2clip
         if type(db) == type({}):
             self._exp = db
             self.isdb=False
         else:
             self.isdb=True
             self._exp = ExportDb(db)._exp
-
-    def copy2clip(self,key,tip ,value):
-        print (key,'  :  ', " | %s copied to clipboard "%tip)
-        (subprocess.Popen(['xsel', '-pi'], stdin = subprocess.PIPE)
-                         .communicate(value.encode()))
-        (subprocess.Popen(['xsel', '-bi'], stdin = subprocess.PIPE)
-                         .communicate(value.encode()))
-        time.sleep(self.sleep)
-        tmp1 = subprocess.Popen(['xsel', '-pc'])
-        tmp1.wait()
-        tmp1 = subprocess.Popen(['xsel', '-bc'])
-        tmp1.wait()
 
     def _print_ls(self, key):
         for i in self._loc_ls :
