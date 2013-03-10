@@ -1,8 +1,8 @@
 from lib_lewm.copy_clip import   CopyClip
 class Keepass(CopyClip):
-    def __init__(self, db,sleep=0):
+    def __init__(self, db,sleep=0,islist = False):
         super(Keepass, self).__init__(sleep)
-        self.islist = False
+        self.islist = islist
         if type(db) == type({}):
             self._exp = db
             self.isdb=False
