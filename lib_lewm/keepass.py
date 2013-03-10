@@ -19,10 +19,7 @@ class Keepass(CopyClip):
     def fill_ls(self):
         self._loc_ls=[]
         for i,e in self._exp.items():
-            if self.islist:
-                self._loc_ls.append( i+' ' +e['username'])
-            else:
-                self._loc_ls.append( i)
+            self._loc_ls.append( i)
         self._loc_ls.sort()
 
     def cat(self):
@@ -35,8 +32,11 @@ class Keepass(CopyClip):
             self.copy2clip(person,'username',tmp1['username'])
         elif len(self._loc_cat) > 1:
             for i in self._loc_cat:
-                tmp1 = self._exp[i]
-                print(i,tmp1['username'])
+                if self.islist:
+                    tmp1 = self._exp[i]
+                    print(i,tmp1['username'])
+                else:
+                    print(i)
         else:
             print('no term')
 

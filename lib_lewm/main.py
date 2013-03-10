@@ -15,6 +15,8 @@ def main(filename):
     (options, args) = parser.parse_args()
     islist = False
     if options.export:
+        if type(db) == type({}):
+            sys.exit()
         exp1 = ExportDb(db)
         exp1.start(args[0])
         sys.exit()
