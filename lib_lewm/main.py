@@ -2,6 +2,7 @@
 from cmd import Cmd
 from kppy import *
 from lib_lewm.common import   opendb
+from lib_lewm.export_db import   ExportDb
 import getopt
 import subprocess
 import time
@@ -15,18 +16,12 @@ class CmdKeepass(Cmd):
         self.sleep =sleep
         self.prompt = '>>' + ': '
         self._hist    = []      ## No history yet
-        self._exp = {}
         if type(db) == type({}):
             self._exp = db
             self.isdb=False
         else:
-            self.entries={}
-            self.db=db
             self.isdb=True
-            self.cur_root=self.db._root_group
-            self.paths = []
-            self.walk()
-            self.db.close()
+            self._exp = ExportDb(db)._exp
 
     def copy2clip(self,key,tip ,value):
         print (key,'  :  ', " | %s copied to clipboard "%tip)
@@ -90,13 +85,6 @@ class CmdKeepass(Cmd):
         self._loc_ls.sort()
         self._print_ls(text)
 
-    def change_group(self):
-        entries={}
-        for ent1 in self.cur_root.entries:
-            if ent1.title != 'Meta-Info' and ent1.username != 'SYSTEM':
-                entries[ent1.title]=ent1
-        self.entries=entries
-
     def do_cat(self, person):
         if person:
             if person not in self._exp:
@@ -107,26 +95,7 @@ class CmdKeepass(Cmd):
             self.copy2clip(person,'password',tmp1['password'])
             self.copy2clip(person,'username',tmp1['username'])
 
-    def walk(self ):
-          self.groups=self.cur_root.children
-
-          for i,a1 in self.entries.items() :
-              tmp1={}
-              tmp1['comment']=a1.comment
-              tmp1['url']=a1.url
-              tmp1['username']=a1.username
-              tmp1['password']=a1.password
-              self._exp[self.path+a1.title]=tmp1 
-
-          for i in self.groups :
-              self.cur_root = i
-              self.change_group()
-              self.paths.append(i.title+'_')
-              self.path=(''.join(self.paths))
-              self.walk()
-              self.cur_root = self.cur_root.parent
-              self.paths.pop()
-    
+   
     def help_cat(self):
         print('\n'.join([ 'cat [person]',
                            'cat the person',
@@ -144,17 +113,7 @@ class CmdKeepass(Cmd):
                             ]
         return completions
 
-    def do_export(self, key):
-        if not self.isdb :
-            print('not db')
-            return
-        str1=json.dumps(self._exp,indent=4)
-        p = subprocess.Popen([ 'gpg' ,'-er',   key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
-        p.stdin.write(bytes(str1 + "\n", "ascii"))
-        assert(b''==p.communicate()[0])
-        p.stdin.close()
-
-
+  
     def do_EOF(self, line):
         return True
 
