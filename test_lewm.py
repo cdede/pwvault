@@ -19,6 +19,7 @@ class AppTest(unittest.TestCase):
         if FLAG == 1:
             db,sleep1=opendb('config','a')
             self.exp1 = ExportDb(db)
+            db,sleep1=opendb('config','a')
         else:
             db,sleep1=opendb('config1','a')
         self.cmd = CmdKeepass(db)
