@@ -11,22 +11,24 @@ except ImportError:
 
 import unittest
 
-FLAG=0
+KEY= 'vqydwa'
 
-class AppTest(unittest.TestCase):
+class ExportDbTest(unittest.TestCase):
 
     def setUp(self):
-        if FLAG == 1:
-            db,sleep1=opendb('config','a')
-            self.exp1 = ExportDb(db)
-            db,sleep1=opendb('config','a')
-        else:
-            db,sleep1=opendb('config1','a')
-        self.cmd = Keepass(db)
+         db,sleep1=opendb('config','a')
+         self.exp1 = ExportDb(db)
 
     def tearDown(self):
         pass
 
+    def test_export(self):
+        self.exp1.start('vqydwa')
+
+class KeepassTest(unittest.TestCase):
+    def setUp(self):
+        db,sleep1=opendb('config1','a')
+        self.cmd = Keepass(db)
     def test_start(self):
         self.cmd.start('')
         self.assertTrue(len(self.cmd._loc_cat)==2)
@@ -35,9 +37,6 @@ class AppTest(unittest.TestCase):
         self.cmd.start('as')
         self.assertTrue(len(self.cmd._loc_cat)==0)
 
-    def test_export(self):
-        if FLAG == 1:
-            self.exp1.start('vqydwa')
 
 if __name__ == '__main__':
     unittest.main()

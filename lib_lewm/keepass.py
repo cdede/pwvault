@@ -4,12 +4,8 @@ class Keepass(CopyClip):
     def __init__(self, db,sleep=0,islist = False):
         super(Keepass, self).__init__(sleep)
         self.islist = islist
-        if type(db) == type({}):
-            self._exp = db
-            self.isdb=False
-        else:
-            self.isdb=True
-            self._exp = ExportDb(db)._exp
+        assert type(db) == type({})
+        self._exp = db
 
     def _ls_to_cat(self, key):
         self._loc_cat=[]
