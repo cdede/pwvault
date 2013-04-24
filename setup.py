@@ -13,7 +13,7 @@ setup(
     name = "lewm",
     author = "",
     author_email = "",
-    version = "0.84.2",
+    version = "0.9.1",
     license = "GPL",
     description = "commandline get keepassx password",
     long_description = "README.md",
