@@ -63,13 +63,13 @@ class PassServer(Server):
         exp1 = ExportDb(db)
         self._exp = exp1._exp
 
-        # fill_ls
+    def fill_ls(self):
         self._loc_ls=[]
         for i,e in self._exp.items():
             self._loc_ls.append( i)
         self._loc_ls.sort()
 
-    def _ls_to_cat(self, key):
+    def ls_to_cat(self, key):
         self._loc_cat=[]
         for i in self._loc_ls :
             if key in i :
@@ -88,18 +88,21 @@ class PassServer(Server):
             for i in self._loc_cat:
                 if self.islist:
                     tmp1 = self._exp[i]
-                    print(i,tmp1['username'])
+                    #print(i,tmp1['username'])
                 else:
-                    print(i)
+                    pass
+                    #print(i)
         else:
-            print('no term')
+            pass
+            #print('no term')
         return str1
 
 
     def start_key(self,key):
-        #self._ls_to_cat(key)
+        self.fill_ls()
+        #self.ls_to_cat(key)
         #logging.info(self.cat())
-        #return self.cat()
+        #asd = self.cat()
         return 'asd'
 
 
