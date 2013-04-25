@@ -54,7 +54,7 @@ class Server( Daemon):
                 channel.send ( msg)
 
     def start_key(self,key):
-        return 'sssssss'
+        return 's'
 
 class PassServer(Server):
     def __init__(self, pidfile):
@@ -97,9 +97,10 @@ class PassServer(Server):
 
 
     def start_key(self,key):
-        self._ls_to_cat(key)
-        logging.info(self.cat())
-        return self.cat()
+        #self._ls_to_cat(key)
+        #logging.info(self.cat())
+        #return self.cat()
+        return 'asd'
 
 
 def main():
