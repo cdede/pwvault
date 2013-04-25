@@ -7,16 +7,15 @@ from common import port
 client = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
 client.connect ( ( 'localhost', port ) )
 
-# Retrieve and unpickle the list object:
-print (pickle.loads ( client.recv ( 1024 ) ))
 
 # Send some messages:
 for x in range ( 10 ):
-    str1 = 'Hey.%s\n ' % x
+    str1 = '%s ' % x
     client.send ( str1.encode('utf-8'))
+    print (pickle.loads ( client.recv ( 1024 ) ))
+
+# Retrieve and unpickle the list object:
 
 # Close the connection
 client.close()
 
-
-client.send ( 'stop' )
