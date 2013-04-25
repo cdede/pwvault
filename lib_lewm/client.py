@@ -10,7 +10,7 @@ client.settimeout(5)
 
 
 # Send some messages:
-str1 = '4' 
+str1 = 'a' 
 client.send ( str1.encode('utf-8'))
 print (pickle.loads ( client.recv ( 1024 ) ))
 

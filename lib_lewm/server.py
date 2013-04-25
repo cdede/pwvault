@@ -6,6 +6,8 @@ import socket
 import threading
 from common import port
 from daemon import Daemon
+from export_db import ExportDb
+from common import   opendb
 # We'll pickle a list of numbers:
 someList = [ 1, 2, 7, 9, 0 ]
 pickledList = pickle.dumps ( someList )
@@ -46,16 +48,66 @@ class Server( Daemon):
                 channel.close()
                 logging.info ('Closed connection:', details [ 0 ])
             else:
-                m = int(a) *2
+                m = self.start_key(a)
                 msg = pickle.dumps(m) 
-                logging.info('Send a message %d'%m)
+                logging.info('Send a message %s'%m)
                 channel.send ( msg)
- 
+
+    def start_key(self,key):
+        return 'sssssss'
+
+class PassServer(Server):
+    def __init__(self, pidfile):
+        super(PassServer, self).__init__(pidfile)
+        db,sleep1=opendb('../config','a')
+        exp1 = ExportDb(db)
+        self._exp = exp1._exp
+        logging.info ('connection: %d' % len(self._exp))
+
+        # fill_ls
+        self._loc_ls=[]
+        for i,e in self._exp.items():
+            self._loc_ls.append( i)
+        self._loc_ls.sort()
+
+    def _ls_to_cat(self, key):
+        self._loc_cat=[]
+        for i in self._loc_ls :
+            if key in i :
+                self._loc_cat.append(i)
+
+    def cat(self):
+        str1 = 'do cat'
+        if len(self._loc_cat) == 1:
+            person = self._loc_cat[0]
+            tmp1 = self._exp[person]
+            #print('comment :  ',tmp1['comment'])
+            #print('url :  ',tmp1['url'])
+            #self.copy2clip(person,'password',tmp1['password'])
+            #self.copy2clip(person,'username',tmp1['username'])
+        elif len(self._loc_cat) > 1:
+            for i in self._loc_cat:
+                if self.islist:
+                    tmp1 = self._exp[i]
+                    print(i,tmp1['username'])
+                else:
+                    print(i)
+        else:
+            print('no term')
+        return str1
+
+
+    def start_key(self,key):
+        self._ls_to_cat(key)
+        logging.info(self.cat())
+        return self.cat()
+
+
 def main():
     args = arg_parse()
     pidfile = '/tmp/server.pid'
     if args.cmd == 'start':
-        server = Server(pidfile)
+        server = PassServer(pidfile)
         logging.info ('start')
         server.start()
     elif args.cmd == 'stop':
