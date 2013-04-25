@@ -6,6 +6,7 @@ from common import port
 # Connect to the server:
 client = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
 client.connect ( ( 'localhost', port ) )
+client.settimeout(5)
 
 
 # Send some messages:

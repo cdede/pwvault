@@ -35,24 +35,23 @@ class Server( Daemon):
         server.bind ( ( '', port ) )
         server.listen ( 5 )
         self.server = server
-        self.a_restart()
-
-    def a_restart(self):
-        self.channel, self.details = self.server.accept()
 
     def run ( self ):
 
         while self.running:
+            self.channel, self.details = self.server.accept()
             logging.info ('Received connection:', self.details [ 0 ])
+            self.channel.settimeout(5)
             a = self.channel.recv ( 1024 )
             logging.info (a)
             if a == b'':
                 self.channel.close()
                 logging.info ('Closed connection:', self.details [ 0 ])
-                self.a_restart()
             else:
                 m = int(a) *2
-                self.channel.send ( pickle.dumps(m) )
+                msg = pickle.dumps(m) 
+                logging.info('Send a message %d'%m)
+                self.channel.send ( msg)
  
 def main():
     args = arg_parse()
