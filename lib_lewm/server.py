@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import logging
 import pickle
 import argparse
 import socket
@@ -20,27 +21,35 @@ def arg_parse():
 
 class Server( Daemon):
     def __init__(self, pidfile):
+        logfile = '/tmp/lewm.log'
+        loglevel = logging.DEBUG
+        logging.basicConfig(format='[%(levelname)s] in %(filename)s:'
+                                   '%(funcName)s at %(asctime)s\n%(message)s',
+                            level=loglevel, 
+                            filename=logfile, 
+                            filemode='a')
+      
         Daemon.__init__(self, pidfile)
         self.running = 1
         server = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
         server.bind ( ( '', port ) )
         server.listen ( 5 )
         self.server = server
-        self.restart()
+        self.a_restart()
 
-    def restart(self):
+    def a_restart(self):
         self.channel, self.details = self.server.accept()
 
     def run ( self ):
 
         while self.running:
-            print ('Received connection:', self.details [ 0 ])
+            logging.info ('Received connection:', self.details [ 0 ])
             a = self.channel.recv ( 1024 )
-            print (a)
+            logging.info (a)
             if a == b'':
                 self.channel.close()
-                print ('Closed connection:', self.details [ 0 ])
-                self.restart()
+                logging.info ('Closed connection:', self.details [ 0 ])
+                self.a_restart()
             else:
                 m = int(a) *2
                 self.channel.send ( pickle.dumps(m) )
@@ -50,6 +59,7 @@ def main():
     pidfile = '/tmp/server.pid'
     if args.cmd == 'start':
         server = Server(pidfile)
+        logging.info ('start')
         server.start()
     elif args.cmd == 'stop':
         daemon = Daemon(pidfile)
