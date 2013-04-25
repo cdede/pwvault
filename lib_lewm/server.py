@@ -31,27 +31,25 @@ class Server( Daemon):
       
         Daemon.__init__(self, pidfile)
         self.running = 1
+
+    def run ( self ):
         server = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
         server.bind ( ( '', port ) )
         server.listen ( 5 )
-        self.server = server
-
-    def run ( self ):
-
         while self.running:
-            self.channel, self.details = self.server.accept()
-            logging.info ('Received connection:', self.details [ 0 ])
-            self.channel.settimeout(5)
-            a = self.channel.recv ( 1024 )
+            channel, details = server.accept()
+            logging.info ('Received connection:', details [ 0 ])
+            channel.settimeout(5)
+            a = channel.recv ( 1024 )
             logging.info (a)
             if a == b'':
-                self.channel.close()
-                logging.info ('Closed connection:', self.details [ 0 ])
+                channel.close()
+                logging.info ('Closed connection:', details [ 0 ])
             else:
                 m = int(a) *2
                 msg = pickle.dumps(m) 
                 logging.info('Send a message %d'%m)
-                self.channel.send ( msg)
+                channel.send ( msg)
  
 def main():
     args = arg_parse()

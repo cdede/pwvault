@@ -10,10 +10,9 @@ client.settimeout(5)
 
 
 # Send some messages:
-for x in range ( 10 ):
-    str1 = '%s ' % x
-    client.send ( str1.encode('utf-8'))
-    print (pickle.loads ( client.recv ( 1024 ) ))
+str1 = '4' 
+client.send ( str1.encode('utf-8'))
+print (pickle.loads ( client.recv ( 1024 ) ))
 
 # Retrieve and unpickle the list object:
 
