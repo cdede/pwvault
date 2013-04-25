@@ -1,24 +1,35 @@
 #!/usr/bin/python
 import pickle
+import argparse
 import socket
 import threading
 from common import port
+from daemon import Daemon
 # We'll pickle a list of numbers:
 someList = [ 1, 2, 7, 9, 0 ]
 pickledList = pickle.dumps ( someList )
 
-# Our thread class:
-class ClientThread ( threading.Thread ):
+def arg_parse():
+    "Parse the command line arguments"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('cmd', default=None,
+                        help='Daemon command: start|stop|restart', type=str)
+    return parser.parse_args()
+           #if a == 'stop':
+            #    self.running = 0
 
-    def __init__ ( self):
+class Server( Daemon):
+    def __init__(self, pidfile):
+        Daemon.__init__(self, pidfile)
         self.running = 1
         server = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
         server.bind ( ( '', port ) )
         server.listen ( 5 )
         self.server = server
         self.restart()
-        self.thread1 = threading.Thread( target= self.run )
-        self.thread1.start()
+
+    def restart(self):
+        self.channel, self.details = self.server.accept()
 
     def run ( self ):
 
@@ -33,13 +44,15 @@ class ClientThread ( threading.Thread ):
             else:
                 m = int(a) *2
                 self.channel.send ( pickle.dumps(m) )
-            #if a == 'stop':
-            #    self.running = 0
-
-    def restart(self):
-        self.channel, self.details = self.server.accept()
-
+ 
 def main():
-    ClientThread()
+    args = arg_parse()
+    pidfile = '/tmp/server.pid'
+    if args.cmd == 'start':
+        server = Server(pidfile)
+        server.start()
+    elif args.cmd == 'stop':
+        daemon = Daemon(pidfile)
+        daemon.stop()
 if __name__ == '__main__':
     main()
