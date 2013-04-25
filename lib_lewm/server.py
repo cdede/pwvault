@@ -62,7 +62,6 @@ class PassServer(Server):
         db,sleep1=opendb('../config','a')
         exp1 = ExportDb(db)
         self._exp = exp1._exp
-        logging.info ('connection: %d' % len(self._exp))
 
         # fill_ls
         self._loc_ls=[]
@@ -108,7 +107,6 @@ def main():
     pidfile = '/tmp/server.pid'
     if args.cmd == 'start':
         server = PassServer(pidfile)
-        logging.info ('start')
         server.start()
     elif args.cmd == 'stop':
         daemon = Daemon(pidfile)
