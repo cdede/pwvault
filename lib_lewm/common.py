@@ -6,6 +6,8 @@ from kppy import KPDB
 import subprocess
 import json
 
+port = 50000
+
 def getfilename(file1):
     if file1 == '':
         file1 = None
