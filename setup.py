@@ -28,5 +28,5 @@ setup(
             ]
         )
     ],
-    scripts = ['lewm']
+    scripts = ['lewm','lewms']
 )

@@ -1,9 +1,9 @@
 import logging
 import pickle
 import socket
-from common import port
+from lib_lewm.common import port
 
-from daemon import Daemon
+from lib_lewm.daemon import Daemon
 
 class Server( Daemon):
     def __init__(self, pidfile):

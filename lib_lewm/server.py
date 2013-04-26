@@ -1,17 +1,8 @@
 #!/usr/bin/python
 import logging
-import argparse
-from export_db import ExportDb
-from common import   opendb
-from baseserver import Server
-from daemon import Daemon
-
-def arg_parse():
-    "Parse the command line arguments"
-    parser = argparse.ArgumentParser()
-    parser.add_argument('cmd', default=None,
-                        help='Daemon command: start|stop|restart', type=str)
-    return parser.parse_args()
+from lib_lewm.export_db import ExportDb
+from lib_lewm.common import   opendb
+from lib_lewm.baseserver import Server
 
 class PassServer(Server):
     def __init__(self, pidfile):
@@ -65,19 +56,3 @@ class PassServer(Server):
         asd = self.cat()
         return asd
 
-
-def main():
-    args = arg_parse()
-    pidfile = '/tmp/server.pid'
-    if args.cmd == 'start':
-        server = PassServer(pidfile)
-        server.start()
-    elif args.cmd == 'stop':
-        daemon = Daemon(pidfile)
-        daemon.stop()
-    elif args.cmd == '1':
-        server = PassServer(pidfile)
-        a= server.start_key(['as',True])
-        print (a)
-if __name__ == '__main__':
-    main()

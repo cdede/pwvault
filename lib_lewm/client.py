@@ -1,8 +1,7 @@
-#!/usr/bin/python
 import pickle
 import socket
-from common import port
-from copy_clip import   CopyClip
+from lib_lewm.common import port
+from lib_lewm.copy_clip import   CopyClip
 import argparse
 
 def arg_parse():
@@ -15,7 +14,7 @@ def arg_parse():
     return parser.parse_args()
 
 
-def main():
+def main(a):
     args = arg_parse()
     str1 = [args.cmd,args.list] 
     get_item(str1)
@@ -42,5 +41,3 @@ def get_item(str1):
     # Close the connection
     client.close()
 
-if __name__ == '__main__':
-    main()
