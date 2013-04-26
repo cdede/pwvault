@@ -7,5 +7,5 @@ except ImportError:
     from lib_lewm.main_s import main
 
 if __name__ == "__main__":
-    main('~/.config/lewm/config')
+    main()
  

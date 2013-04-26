@@ -7,7 +7,7 @@ from lib_lewm.baseserver import Server
 class PassServer(Server):
     def __init__(self, pidfile,filename):
         super(PassServer, self).__init__(pidfile)
-        db,sleep1=opendb(filename, 'a')
+        db,sleep1=opendb(filename )
         exp1 = ExportDb(db)
         self._exp = exp1._exp
 

@@ -7,11 +7,17 @@ def arg_parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('cmd', default=None,
                         help='Daemon command: start|stop|restart', type=str)
+    parser.add_argument('-f','--filename', help='conf filename'
+            , default='')
     return parser.parse_args()
 
-def main(filename):
+def main():
     args = arg_parse()
     pidfile = '/tmp/server.pid'
+    if args.filename == '':
+        filename = '~/.config/lewm/config'
+    else:
+        filename = args.filename
     if args.cmd == 'start':
         server = PassServer(pidfile,filename)
         server.start()
