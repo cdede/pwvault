@@ -5,9 +5,8 @@ from lib_lewm.common import   opendb
 from lib_lewm.baseserver import Server
 
 class PassServer(Server):
-    def __init__(self, pidfile):
+    def __init__(self, pidfile,filename):
         super(PassServer, self).__init__(pidfile)
-        filename = '../config'
         db,sleep1=opendb(filename, 'a')
         exp1 = ExportDb(db)
         self._exp = exp1._exp
