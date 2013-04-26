@@ -16,8 +16,17 @@ def arg_parse():
 
 def main(a):
     args = arg_parse()
-    str1 = [args.cmd,args.list] 
-    get_item(str1)
+    pass_abc ='abc'
+    str1 = [pass_abc, args.cmd,args.list] 
+    ret1 = get_item(str1)
+
+    str2,dict1 = ret1
+    print (str2)
+    if dict1 != {}:
+        cc1 = CopyClip(5)
+        cc1.copy2clip(dict1['key'],'password',dict1['password'])
+        cc1.copy2clip(dict1['key'],'username',dict1['username'])
+    
 
 def get_item(str1):
     # Connect to the server:
@@ -28,16 +37,8 @@ def get_item(str1):
     
     # Send some messages:
     client.send ( pickle.dumps(str1))
-    str2,dict1 = pickle.loads ( client.recv ( 1024 ) )
-    print (str2)
-    if dict1 != {}:
-        cc1 = CopyClip(5)
-        cc1.copy2clip(dict1['key'],'password',dict1['password'])
-        cc1.copy2clip(dict1['key'],'username',dict1['username'])
-    
-    
-    # Retrieve and unpickle the list object:
-    
+    get1 = pickle.loads ( client.recv ( 1024 ) )
     # Close the connection
     client.close()
+    return get1
 
