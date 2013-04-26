@@ -1,16 +1,9 @@
 #!/usr/bin/python
 import logging
-import pickle
 import argparse
-import socket
-import threading
-from common import port
-from daemon import Daemon
 from export_db import ExportDb
 from common import   opendb
-# We'll pickle a list of numbers:
-someList = [ 1, 2, 7, 9, 0 ]
-pickledList = pickle.dumps ( someList )
+from baseserver import Server
 
 def arg_parse():
     "Parse the command line arguments"
@@ -18,46 +11,7 @@ def arg_parse():
     parser.add_argument('cmd', default=None,
                         help='Daemon command: start|stop|restart', type=str)
     return parser.parse_args()
-           #if a == 'stop':
-            #    self.running = 0
 
-class Server( Daemon):
-    def __init__(self, pidfile):
-        logfile = '/tmp/lewm.log'
-        loglevel = logging.DEBUG
-        logging.basicConfig(format='[%(levelname)s] in %(filename)s:'
-                                   '%(funcName)s at %(asctime)s\n%(message)s',
-                            level=loglevel, 
-                            filename=logfile, 
-                            filemode='a')
-      
-        Daemon.__init__(self, pidfile)
-        self.running = 1
-
-    def run ( self ):
-        server = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
-        server.bind ( ( '', port ) )
-        server.listen ( 5 )
-        while self.running:
-            channel, details = server.accept()
-            logging.info ('Received connection:', details [ 0 ])
-            channel.settimeout(5)
-            a = channel.recv ( 1024 )
-            a = pickle.loads(a)
-            logging.info (a)
-            if a == 'CLOSE':
-                channel.close()
-                logging.info ('Closed connection:', details [ 0 ])
-            else:
-                m = self.start_key(a)
-                msg = pickle.dumps(m) 
-                logging.info('Send a message %s'%str(m))
-                channel.send ( msg)
-
-    def start_key(self,key):
-        return 's'
-
-#class PassServer():
 class PassServer(Server):
     def __init__(self, pidfile):
         super(PassServer, self).__init__(pidfile)
