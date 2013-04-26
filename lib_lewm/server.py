@@ -16,7 +16,10 @@ def arg_parse():
 class PassServer(Server):
     def __init__(self, pidfile):
         super(PassServer, self).__init__(pidfile)
-        self._exp = {'Internet_e': {'url': 'e', 'username': 'e', 'comment': '', 'password': 'e'}, 'Internet_a_c': {'url': 'c', 'username': 'c', 'comment': '', 'password': 'c'}}
+        filename = '../config'
+        db,sleep1=opendb(filename, 'a')
+        exp1 = ExportDb(db)
+        self._exp = exp1._exp
 
     def fill_ls(self):
         self._loc_ls=[]
