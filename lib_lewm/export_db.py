@@ -41,12 +41,3 @@ class ExportDb():
                 entries[ent1.title]=ent1
         self.entries=entries
 
-    def start(self, key):
-        str1=json.dumps(self._exp,indent=4)
-        p = subprocess.Popen([ 'gpg' ,'-er',   key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
-        p.stdin.write(bytes(str1 + "\n", "ascii"))
-        assert(b''==p.communicate()[0])
-        p.stdin.close()
-
-
-
