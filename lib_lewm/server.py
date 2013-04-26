@@ -4,6 +4,7 @@ import argparse
 from export_db import ExportDb
 from common import   opendb
 from baseserver import Server
+from daemon import Daemon
 
 def arg_parse():
     "Parse the command line arguments"
@@ -44,7 +45,7 @@ class PassServer(Server):
             for i in self._loc_cat:
                 if self.islist:
                     tmp1 = self._exp[i]
-                    str1 += i+tmp1['username'] + "\n"
+                    str1 += '%s   %s\n' % (i, tmp1['username'])
                 else:
                     str1 += i + "\n"
         else:
@@ -73,7 +74,7 @@ def main():
         daemon.stop()
     elif args.cmd == '1':
         server = PassServer(pidfile)
-        a= server.start_key(['a',True])
+        a= server.start_key(['as',True])
         print (a)
 if __name__ == '__main__':
     main()
