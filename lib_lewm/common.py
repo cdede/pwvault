@@ -7,7 +7,6 @@ import subprocess
 import json
 
 port = 50000
-hash_pass = 'ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f'
 
 def getfilename(file1):
     if file1 == '':
@@ -23,15 +22,15 @@ def opendb(filename,password1=''):
     cf1.read(filename)
     key1 = cf1.get("main", "key")
     key1 = getfilename(key1)
-    sleep1 = int(cf1.get("main", "sleep"))
     keyfile = cf1.get("main", "keyfile")
     keyfile = getfilename(keyfile)
+    hash_pass = cf1.get("main", "hash_pass")
     if password1 == '':
         ret_pass = getpass('input password :')
     else:
         ret_pass = password1
     db =KPDB(key1, ret_pass ,keyfile, True)
-    return db,sleep1
+    return db,hash_pass
 
 def hash_str(str1):
     h1 = hashlib.new('sha512')

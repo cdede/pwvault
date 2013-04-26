@@ -1,12 +1,13 @@
 import logging
 import pickle
 import socket
-from lib_lewm.common import port,hash_str,hash_pass
+from lib_lewm.common import port,hash_str
 
 from lib_lewm.daemon import Daemon
 
 class Server( Daemon):
-    def __init__(self, pidfile):
+    def __init__(self, pidfile, hash_pass):
+        self.hash_pass = hash_pass
         logfile = '/tmp/lewm.log'
         loglevel = logging.DEBUG
         logging.basicConfig(format='[%(levelname)s] in %(filename)s:'
@@ -33,7 +34,7 @@ class Server( Daemon):
                 logging.info ('Closed connection:', details [ 0 ])
             else:
                 password_client  =a[0] 
-                if hash_str(password_client) == hash_pass:
+                if hash_str(password_client) == self.hash_pass:
                     a = a[1:]
                     m = self.start_key(a)
                     msg = pickle.dumps(m) 
