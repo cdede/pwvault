@@ -4,9 +4,6 @@ import configparser
 from getpass import getpass
 from kppy import KPDB
 import subprocess
-import json
-
-port = 50000
 
 def getfilename(file1):
     if file1 == '':
@@ -29,12 +26,8 @@ def opendb(filename,password1=''):
     password1= subprocess.Popen(args='gpg --output - %s' % hash_pass, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
     ret_pass = password1.decode("utf-8")
     db =KPDB(key1, ret_pass ,keyfile, True)
-    return db,hash_pass
-
-def hash_str(str1):
-    h1 = hashlib.new('sha512')
-    h1.update(str1.encode())
-    return h1.hexdigest()
+    sleep = cf1.get("main", "sleep")
+    return db,sleep
 
 def gen_pass(key):
     ret_pass = getpass('input password :')

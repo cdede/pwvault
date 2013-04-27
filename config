@@ -1,6 +1,5 @@
 [main]
-#key = ~/lewm/w.gpg
 key = ~/lewm/test.kdb
 keyfile = 
-#sleep = 9
+sleep = 9
 hash_pass =~/eer.gpg

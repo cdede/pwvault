@@ -2,6 +2,7 @@ import argparse
 from lib_lewm.common import gen_pass
 from lib_lewm.copy_clip import   CopyClip
 from lib_lewm.server import   PassServer
+from lib_lewm.common import   opendb
 import sys
 
 def arg_parse():
@@ -26,7 +27,9 @@ def main():
     if args.gpg:
         gen_pass(args.cmd)
         sys.exit()
-    server = PassServer(filename)
+    db,sleep=opendb(filename )
+    sleep = int(sleep)
+    server = PassServer(db)
     str1 = [args.cmd,args.list] 
     str2,dict1 =  server.start_key(str1)
     print (str2)

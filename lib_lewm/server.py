@@ -1,10 +1,8 @@
 #!/usr/bin/python
 from lib_lewm.export_db import ExportDb
-from lib_lewm.common import   opendb
 
 class PassServer():
-    def __init__(self, filename):
-        db,hash_pass=opendb(filename )
+    def __init__(self, db):
         exp1 = ExportDb(db)
         self._exp = exp1._exp
 
