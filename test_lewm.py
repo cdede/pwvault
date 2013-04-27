@@ -5,7 +5,7 @@ try:
     from lib_lewm.main import main1
 except ImportError:
     os.sys.path.append(os.curdir)
-    from lib_lewm.server import PassServer
+    from lib_lewm.keepass import PassServer
     from lib_lewm.common import   opendb
 
 import unittest

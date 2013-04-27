@@ -1,7 +1,7 @@
 import argparse
 from lib_lewm.common import gen_pass
 from lib_lewm.copy_clip import   CopyClip
-from lib_lewm.server import   PassServer
+from lib_lewm.keepass import   PassServer
 from lib_lewm.common import   opendb
 import sys
 
