@@ -1,13 +1,10 @@
 #!/usr/bin/python
-import logging
 from lib_lewm.export_db import ExportDb
 from lib_lewm.common import   opendb
-from lib_lewm.baseserver import Server
 
-class PassServer(Server):
-    def __init__(self, pidfile,filename):
+class PassServer():
+    def __init__(self, filename):
         db,hash_pass=opendb(filename )
-        super(PassServer, self).__init__(pidfile,hash_pass)
         exp1 = ExportDb(db)
         self._exp = exp1._exp
 
@@ -49,7 +46,6 @@ class PassServer(Server):
     def start_key(self,msg):
         key,islist = msg
         self.islist = islist
-        logging.info ("key : %s" % key)
         self.fill_ls()
         self.ls_to_cat(key)
         asd = self.cat()

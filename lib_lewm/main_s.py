@@ -1,31 +1,38 @@
 import argparse
-from lib_lewm.server import PassServer
-from lib_lewm.daemon import Daemon
+from lib_lewm.common import gen_pass
+from lib_lewm.copy_clip import   CopyClip
+from lib_lewm.server import   PassServer
+import sys
 
 def arg_parse():
     "Parse the command line arguments"
     parser = argparse.ArgumentParser()
-    parser.add_argument('cmd', default=None,
-                        help='Daemon command: start|stop|restart', type=str)
     parser.add_argument('-f','--filename', help='conf filename'
             , default='')
+    parser.add_argument('cmd', default=None,
+                        help='...(cmd)...', type=str)
+    parser.add_argument('-l','--list', action='store_true',default=False, dest='list',
+                        help='list username' )
+    parser.add_argument('-g','--gpg-pass', action='store_true',default=False, dest='gpg',
+                        help='gpg password' )
     return parser.parse_args()
 
 def main():
     args = arg_parse()
-    pidfile = '/tmp/server.pid'
     if args.filename == '':
         filename = '~/.config/lewm/config'
     else:
         filename = args.filename
-    if args.cmd == 'start':
-        server = PassServer(pidfile,filename)
-        server.start()
-    elif args.cmd == 'stop':
-        daemon = Daemon(pidfile)
-        daemon.stop()
-    elif args.cmd == '1':
-        server = PassServer(pidfile)
-        a= server.start_key(['as',True])
-        print (a)
+    if args.gpg:
+        gen_pass(args.cmd)
+        sys.exit()
+    server = PassServer(filename)
+    str1 = [args.cmd,args.list] 
+    str2,dict1 =  server.start_key(str1)
+    print (str2)
+    if dict1 != {}:
+        cc1 = CopyClip(5)
+        cc1.copy2clip(dict1['key'],'password',dict1['password'])
+        cc1.copy2clip(dict1['key'],'username',dict1['username'])
+    
 

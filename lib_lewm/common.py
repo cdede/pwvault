@@ -25,10 +25,9 @@ def opendb(filename,password1=''):
     keyfile = cf1.get("main", "keyfile")
     keyfile = getfilename(keyfile)
     hash_pass = cf1.get("main", "hash_pass")
-    if password1 == '':
-        ret_pass = getpass('input password :')
-    else:
-        ret_pass = password1
+    hash_pass = getfilename(hash_pass)
+    password1= subprocess.Popen(args='gpg --output - %s' % hash_pass, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
+    ret_pass = password1.decode("utf-8")
     db =KPDB(key1, ret_pass ,keyfile, True)
     return db,hash_pass
 
@@ -36,4 +35,13 @@ def hash_str(str1):
     h1 = hashlib.new('sha512')
     h1.update(str1.encode())
     return h1.hexdigest()
+
+def gen_pass(key):
+    ret_pass = getpass('input password :')
+    ret_pass1 = getpass('reinput password :')
+    if ret_pass == ret_pass1:
+        p = subprocess.Popen([ 'gpg' ,'-er',   key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+        p.stdin.write(bytes(ret_pass , "ascii"))
+        assert(b''==p.communicate()[0])
+        p.stdin.close()
 
