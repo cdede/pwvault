@@ -12,7 +12,7 @@ import unittest
 
 class KeepassTest(unittest.TestCase):
     def setUp(self):
-        filename = 'config'
+        filename = 'example_config'
         db,_ = opendb(filename)
         self.cmd = PassServer(db)
     def test_start(self):

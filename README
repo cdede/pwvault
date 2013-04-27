@@ -1,0 +1,7 @@
+lewm
+====
+
+commandline get keepassx password 
+
+cp /usr/share/example_config ~/.config/lewm/config :
+

@@ -13,20 +13,15 @@ setup(
     name = "lewm",
     author = "",
     author_email = "",
-    version = "0.9.13",
+    version = "0.9.30",
     license = "GPL3",
     description = "commandline get keepassx password",
-    long_description = "README.md",
+    long_description = "README",
     url = "http://github.com/cdede/lewm/",
     platforms = 'POSIX',
     packages = ['lib_lewm' ],
-    data_files = [
-        (
-            sysconfig.get_python_lib() + '/lib_lewm',
-            [
-                './README.md'
-            ]
-        )
-    ],
+    data_files = [  ('share/doc/lewm', ['README', 'COPYING']),
+        ('share/lewm',['example_config']) ,
+        ],
     scripts = ['lewm']
 )
