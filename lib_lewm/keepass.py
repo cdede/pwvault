@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from lib_lewm.export_db import ExportDb
 
 class PassServer():
@@ -12,7 +11,7 @@ class PassServer():
             self._loc_ls.append( i)
         self._loc_ls.sort()
 
-    def ls_to_cat(self, key):
+    def _ls_to_cat(self, key):
         self._loc_cat=[]
         for i in self._loc_ls :
             if key in i :
@@ -45,7 +44,5 @@ class PassServer():
         key,islist = msg
         self.islist = islist
         self.fill_ls()
-        self.ls_to_cat(key)
-        asd = self.cat()
-        return asd
-
+        self._ls_to_cat(key)
+        return self.cat()
