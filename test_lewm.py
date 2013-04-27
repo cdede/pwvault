@@ -13,7 +13,8 @@ import unittest
 class KeepassTest(unittest.TestCase):
     def setUp(self):
         filename = 'config'
-        self.cmd = PassServer(filename)
+        db,_ = opendb(filename)
+        self.cmd = PassServer(db)
     def test_start(self):
         a= self.cmd.start_key(['',True])
         self.assertTrue(('Internet_a_c   c\nInternet_e   e\n', {})==a)
