@@ -1,8 +1,8 @@
 import argparse
-from lib_lewm.common import gen_pass
-from lib_lewm.copy_clip import   CopyClip
-from lib_lewm.keepass import   PassServer
-from lib_lewm.common import   opendb
+from .common import gen_pass
+from .copy_clip import   CopyClip
+from .keepass import   PassServer
+from .common import   opendb
 import sys
 
 def arg_parse():

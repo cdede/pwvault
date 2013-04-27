@@ -1,4 +1,4 @@
-from lib_lewm.export_db import ExportDb
+from .export_db import ExportDb
 
 class PassServer():
     def __init__(self, db):
