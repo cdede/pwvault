@@ -34,7 +34,7 @@ def main():
     str2,dict1 =  server.start_key(str1)
     print (str2)
     if dict1 != {}:
-        cc1 = CopyClip(5)
+        cc1 = CopyClip(sleep)
         cc1.copy2clip(dict1['key'],'password',dict1['password'])
         cc1.copy2clip(dict1['key'],'username',dict1['username'])
     
