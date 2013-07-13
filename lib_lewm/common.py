@@ -22,7 +22,7 @@ def opendb(filename,password1=''):
     keyfile = getfilename(keyfile)
     hash_pass = cf1.get("main", "hash_pass")
     hash_pass = getfilename(hash_pass)
-    password1= subprocess.Popen(args='gpg --output - %s' % hash_pass, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
+    password1= subprocess.Popen(args='gpg --quiet  --batch --output - %s' % hash_pass, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
     ret_pass = password1.decode("utf-8")
     db =KPDB(key1, ret_pass ,keyfile, True)
     sleep = cf1.get("main", "sleep")
