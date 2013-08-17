@@ -1,7 +1,8 @@
 import os
 import configparser
 from getpass import getpass
-from kppy import KPDB
+from kppy.database import KPDBv1
+from kppy.exceptions import KPError
 import subprocess
 
 def getfilename(file1):
@@ -27,7 +28,11 @@ def opendb(filename,password1=''):
         ret_pass = password1.decode("utf-8")
     else:
         ret_pass = password1
-    db =KPDB(key1, ret_pass ,keyfile, True)
+    try:
+        db = KPDBv1(key1, ret_pass, keyfile, True)
+    except KPError as e:
+        print(e)
+
     sleep = cf1.get("main", "sleep")
     return db,sleep
 

@@ -5,7 +5,8 @@ class ExportDb():
     def __init__(self, db):
         self.entries={}
         self.db=db
-        self.cur_root=self.db._root_group
+        db.load()
+        self.cur_root=self.db.root_group
         self.paths = []
         self._exp = {}
         self.walk()

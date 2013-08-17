@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import os
-from kppy import KPDB
 try:
     from lib_lewm.main import main1
 except ImportError:
