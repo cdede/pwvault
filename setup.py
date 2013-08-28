@@ -21,7 +21,7 @@ setup(
     platforms = 'POSIX',
     packages = ['lib_lewm' ],
     data_files = [  ('share/doc/lewm', ['README', 'COPYING']),
-        ('share/lewm',['example_config']) ,
+        ('share/lewm',['example_config','example_export.conf']) ,
         ],
     scripts = ['lewm']
 )

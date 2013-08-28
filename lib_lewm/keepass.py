@@ -1,9 +1,10 @@
-from .export_db import ExportDb
+import pickle
+import subprocess
 
 class PassServer():
-    def __init__(self, db):
-        exp1 = ExportDb(db)
-        self._exp = exp1._exp
+    def __init__(self, file1):
+        file2 = subprocess.Popen(args='gpg --quiet  --batch --output - %s' % file1, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]
+        self._exp = pickle.loads(file2)
 
     def fill_ls(self):
         self._loc_ls=[]

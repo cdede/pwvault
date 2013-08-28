@@ -32,9 +32,18 @@ def opendb(filename,password1=''):
         db = KPDBv1(key1, ret_pass, keyfile, True)
     except KPError as e:
         print(e)
+    gpgkey = cf1.get("main", "gpgkey")
 
+    return db,gpgkey
+
+def open_conf_1(filename):
+    filename=os.path.expanduser(filename)
+    cf1 = configparser.ConfigParser()
+    cf1.read(filename)
     sleep = cf1.get("main", "sleep")
-    return db,sleep
+    passfile = cf1.get("main", "passfile")
+    passfile = getfilename(passfile)
+    return passfile,sleep
 
 def gen_pass(key):
     ret_pass = getpass('input password :')

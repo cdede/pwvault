@@ -2,7 +2,8 @@ import argparse
 from .common import gen_pass
 from .copy_clip import   CopyClip
 from .keepass import   PassServer
-from .common import   opendb
+from .common import   opendb, open_conf_1
+from .export_db import ExportDb
 import sys
 
 def arg_parse():
@@ -16,20 +17,30 @@ def arg_parse():
                         help='list username' )
     parser.add_argument('-g','--gpg-pass', action='store_true',default=False, dest='gpg',
                         help='gpg password' )
+    parser.add_argument('-e','--export', action='store_true',default=False, 
+                        help='export keepass file' )
     return parser.parse_args()
 
 def main():
     args = arg_parse()
     if args.filename == '':
-        filename = '~/.config/lewm/config'
+        if args.export:
+            filename = '~/.config/lewm/export.conf'
+        else:
+            filename = '~/.config/lewm/config'
     else:
         filename = args.filename
     if args.gpg:
         gen_pass(args.cmd)
         sys.exit()
-    db,sleep=opendb(filename )
+    elif args.export:
+        db=opendb(filename )
+        ed1 = ExportDb(db,args.cmd)
+        ed1.export()
+        sys.exit()
+    file1,sleep=open_conf_1(filename )
     sleep = int(sleep)
-    server = PassServer(db)
+    server = PassServer(file1)
     str1 = [args.cmd,args.list] 
     str2,dict1 =  server.start_key(str1)
     print (str2)

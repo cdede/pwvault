@@ -1,10 +1,11 @@
-import json
 import subprocess
+import pickle
 
 class ExportDb():
-    def __init__(self, db):
+    def __init__(self, db, key):
         self.entries={}
         self.db=db
+        self.key = key
         db.load()
         self.cur_root=self.db.root_group
         self.paths = []
@@ -42,3 +43,8 @@ class ExportDb():
                 entries[ent1.title]=ent1
         self.entries=entries
 
+    def export(self ):
+        p = subprocess.Popen([ 'gpg' ,'-er',   self.key,'--output', 'w.gpg'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+        p.stdin.write(pickle.dumps(self._exp) )
+        assert(b''==p.communicate()[0])
+        p.stdin.close()
