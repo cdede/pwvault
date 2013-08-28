@@ -5,6 +5,7 @@ from .keepass import   PassServer
 from .common import   opendb, open_conf_1
 from .export_db import ExportDb
 import sys
+import os
 
 def arg_parse():
     "Parse the command line arguments"
@@ -34,8 +35,8 @@ def main():
         gen_pass(args.cmd)
         sys.exit()
     elif args.export:
-        db=opendb(filename )
-        ed1 = ExportDb(db,args.cmd)
+        db, key1=opendb(filename )
+        ed1 = ExportDb(db,key1,os.path.basename(args.cmd))
         ed1.export()
         sys.exit()
     file1,sleep=open_conf_1(filename )
