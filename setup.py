@@ -10,7 +10,7 @@ except:
     sys.exit(0)
 
 setup(
-    name = "lewm",
+    name = "pwvault",
     author = "",
     author_email = "",
     version = "0.9.37",
@@ -19,9 +19,9 @@ setup(
     long_description = "README",
     url = "http://github.com/cdede/lewm/",
     platforms = 'POSIX',
-    packages = ['lib_lewm' ],
+    packages = ['lib_pwva' ],
     data_files = [  ('share/doc/lewm', ['README', 'COPYING']),
         ('share/lewm',['example_config','example_export.conf']) ,
         ],
-    scripts = ['lewm']
+    scripts = ['pwvault']
 )

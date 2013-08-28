@@ -1,12 +1,12 @@
 #!/usr/bin/python
 import os
 try:
-    from lib_lewm.main import main1
+    from lib_pwva.main import main1
 except ImportError:
     os.sys.path.append(os.curdir)
-    from lib_lewm.keepass import PassServer
-    from lib_lewm.common import   opendb,open_conf_1
-    from lib_lewm.export_db import   ExportDb
+    from lib_pwva.keepass import PassServer
+    from lib_pwva.common import   opendb,open_conf_1
+    from lib_pwva.export_db import   ExportDb
 
 import unittest
 class KeepassTest(unittest.TestCase):
