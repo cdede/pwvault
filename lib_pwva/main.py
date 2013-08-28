@@ -25,9 +25,9 @@ def main():
     args = arg_parse()
     if args.filename == '':
         if args.export:
-            filename = '~/.config/lewm/export.conf'
+            filename = '~/.config/pwvault/export.conf'
         else:
-            filename = '~/.config/lewm/config'
+            filename = '~/.config/pwvault/config'
     else:
         filename = args.filename
     if args.gpg:

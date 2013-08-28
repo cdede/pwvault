@@ -3,5 +3,6 @@ lewm
 
 commandline get keepassx password 
 
-cp /usr/share/example_config ~/.config/lewm/config :
+cp /usr/share/example_config ~/.config/pwvault/config 
+cp /usr/share/example_export.conf ~/.config/pwvault/export.conf 
 
