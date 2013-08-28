@@ -13,7 +13,7 @@ setup(
     name = "pwvault",
     author = "",
     author_email = "",
-    version = "0.9.37",
+    version = "0.9.40",
     license = "GPL3",
     description = "commandline get keepassx password",
     long_description = "README",
